@@ -5,7 +5,6 @@ import Sidebar from "./sidebar";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { CheckBadge } from "@/icons";
-import Search from "@/components/global/search-input";
 import { UserWidget } from "@/components/global/user-widget";
 
 type NavbarProps = {
@@ -19,11 +18,6 @@ const Navbar = ({ imageUrl, username }: NavbarProps) => {
       <GlassSheet trigger={<Menu className="md:hidden cursor-pointer" />}>
         <Sidebar mobile />
       </GlassSheet>
-      <Search
-        searchType="COURSE"
-        className="rounded-full border-themeGray bg-black !opacity-100 px-3"
-        placeholder="Search..."
-      />
       <Link href={`/`} className="hidden md:inline">
         <Button
           variant="outline"

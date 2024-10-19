@@ -23,8 +23,9 @@ import VideoUpload from "../global/video-upload";
 import { createVideo, updateVideo } from "@/actions/video";
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
 import RichTextEditor from "../global/rich-text-editor";
+import ImageUpload from "../global/image-upload";
 
-const CreateVideo = ({ initialData }: { initialData: any }) => {
+const CreateVideo = ({ initialData }: { initialData?: any }) => {
   const [isPending, setIsPending] = useState(false);
   const router = useRouter();
   const form = useForm<z.infer<typeof VideoSchema>>({
@@ -37,12 +38,14 @@ const CreateVideo = ({ initialData }: { initialData: any }) => {
           description: initialData?.description || "",
           videoUrl: initialData?.videoUrl || "",
           method: initialData?.method || "local",
+          thumbnail: initialData?.thumbnail || "",
         }
       : {
           name: "",
           description: "",
           videoUrl: "",
           method: "local",
+          thumbnail: "",
         },
   });
 
@@ -197,6 +200,23 @@ const CreateVideo = ({ initialData }: { initialData: any }) => {
               )}
             />
           )}
+          <FormField
+            control={form.control}
+            disabled={isPending}
+            name="thumbnail"
+            render={({ field }) => (
+              <FormItem className="mb-3">
+                <FormLabel className="flex flex-col gap-2">Thumbnail</FormLabel>
+                <FormControl>
+                  <ImageUpload
+                    onImageUpload={(data) => field.onChange(data)}
+                    initialImageUrl={initialData?.videoThumbnail}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
           <Button
             variant="outline"
             type="submit"

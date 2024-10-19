@@ -2,9 +2,8 @@
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
-import { Logout, Settings } from "@/icons"
+import { Logout } from "@/icons"
 import { useClerk } from "@clerk/nextjs"
-import Link from "next/link"
 import { DropDown } from "./drop-down"
 
 type UserWidgetProps = {
@@ -29,9 +28,6 @@ export const UserAvatar = ({ image, username }: UserWidgetProps) => {
         </Avatar>
       }
     >
-      <Link href={`/pages/settings`} className="flex gap-x-2 px-2">
-        <Settings /> Settings
-      </Link>
       <Button
         onClick={onLogout}
         variant="ghost"

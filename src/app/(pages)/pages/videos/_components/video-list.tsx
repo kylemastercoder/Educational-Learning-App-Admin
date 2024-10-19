@@ -2,7 +2,7 @@
 "use client";
 import { deleteVideo, getVideos } from "@/actions/video";
 import { Card } from "@/components/ui/card";
-import { getYouTubeVideoId, truncateString } from "@/lib/utils";
+import { truncateString } from "@/lib/utils";
 import { Loader2, Edit, EllipsisVertical, Trash } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -18,6 +18,7 @@ import {
 import { Modal } from "@/components/ui/modal";
 import CreateVideo from "@/components/forms/add-video";
 import AlertModal from "@/components/ui/alert-modal";
+import Image from "next/image";
 
 const VideoList = () => {
   const [videos, setVideos] = useState<any[]>([]);
@@ -92,21 +93,13 @@ const VideoList = () => {
       <div key={video.id}>
         <Card className="bg-transparent border-themeGray h-full rounded-xl overflow-hidden">
           {/* Video Player */}
-          <div className="h-4/6">
-            {video.method === "local" ? (
-              <video controls className="w-full h-full" src={video.videoUrl} />
-            ) : (
-              <iframe
-                className="w-full h-full"
-                src={`https://www.youtube.com/embed/${getYouTubeVideoId(
-                  video.videoUrl
-                )}`}
-                title="YouTube video player"
-                frameBorder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-              ></iframe>
-            )}
+          <div className="h-4/6 relative w-full">
+            <Image
+              src={video.thumbnail}
+              alt="Quiz Thumbnail"
+              fill
+              className="w-full h-full object-cover"
+            />
           </div>
           <div className="h-2/6 flex flex-col justify-center px-5">
             <div className="flex items-center justify-between">

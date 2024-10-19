@@ -26,7 +26,7 @@ export const createVideo = async (values: z.infer<typeof VideoSchema>) => {
     return { status: 400, message: `Validation Error: ${errors.join(", ")}` };
   }
 
-  const { name, description, videoUrl, method } = validatedField.data;
+  const { name, description, videoUrl, method, thumbnail } = validatedField.data;
 
   try {
     const courseRef = doc(collection(db, "Videos"));
@@ -36,6 +36,7 @@ export const createVideo = async (values: z.infer<typeof VideoSchema>) => {
       videoUrl: videoUrl,
       userId: clerkId,
       method: method,
+      thumbnail: thumbnail,
       createdAt: new Date().toISOString(),
     });
 
@@ -123,7 +124,7 @@ export const updateVideo = async (
     return { status: 400, message: `Validation Error: ${errors.join(", ")}` };
   }
 
-  const { name, description, videoUrl, method } = validatedField.data;
+  const { name, description, videoUrl, method, thumbnail } = validatedField.data;
 
   try {
     const videoRef = doc(db, "Videos", videoId);
@@ -133,6 +134,7 @@ export const updateVideo = async (
       videoUrl: videoUrl,
       userId: clerkId,
       method: method,
+      thumbnail: thumbnail,
       updatedAt: new Date().toISOString(),
     });
 

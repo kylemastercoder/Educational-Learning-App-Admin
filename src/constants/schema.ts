@@ -74,6 +74,7 @@ export const VideoSchema = z.object({
   method: z.enum(["local", "youtube"], {
     required_error: "You need to select an upload method.",
   }),
+  thumbnail: z.string().min(1, { message: "Thumbnail is required" }),
 });
 
 export const QuizSchema = z.object({
