@@ -1,13 +1,16 @@
-import { clsx, type ClassValue } from "clsx"
-import { twMerge } from "tailwind-merge"
+import { clsx, type ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
+  return twMerge(clsx(inputs));
 }
 
-export const truncateString = (string: string) => {
-  return string.slice(0, 130) + "..."
-}
+export const truncateString = (string: string | undefined) => {
+  if (typeof string !== "string") {
+    return "";
+  }
+  return string.length > 130 ? string.slice(0, 130) + "..." : string;
+};
 
 export function getInitials(name: string) {
   return name
@@ -18,7 +21,8 @@ export function getInitials(name: string) {
 }
 
 export const getYouTubeVideoId = (url: string) => {
-  const regex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
+  const regex =
+    /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
   const match = url.match(regex);
   return match ? match[1] : "";
 };

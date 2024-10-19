@@ -8,9 +8,9 @@ const PageLayout = async ({ children }: { children: React.ReactNode }) => {
   const user = await onAuthenticatedUser();
   if (!user.clerkId) redirect("/sign-in");
   return (
-    <div className="flex h-screen md:pt-5">
+    <div className="flex h-screen md:pt-5 overflow-y-auto">
       <Sidebar />
-      <div className="md:ml-[300px] flex flex-col flex-1 bg-[#101011] md:rounded-tl-xl overflow-y-auto border-l border-t border-[#28282d]">
+      <div className="md:ml-[300px] flex flex-col flex-1 bg-[#101011] h-screen md:rounded-tl-xl overflow-y-auto border-l border-t border-[#28282d]">
         <Navbar imageUrl={user.image} username={user.username as string} />
         {children}
         <MobileNav />

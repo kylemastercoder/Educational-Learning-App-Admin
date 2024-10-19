@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import React, { useState } from "react";
@@ -16,36 +17,64 @@ import { Input } from "../ui/input";
 import { ModuleSchema } from "@/constants/schema";
 import { Button } from "../ui/button";
 import { Loader } from "../global/loader";
-import { createModule } from "@/actions/course";
+import { createModule, updateModule } from "@/actions/course";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import RichTextEditor from "../global/rich-text-editor";
 
-const AddModule = ({ courseId }: { courseId: string }) => {
+const AddModule = ({
+  courseId,
+  initialData,
+  moduleId
+}: {
+  courseId: string;
+  initialData?: any;
+  moduleId?: string;
+}) => {
   const [isPending, setIsPending] = useState(false);
   const router = useRouter();
   const form = useForm<z.infer<typeof ModuleSchema>>({
     resolver: zodResolver(ModuleSchema),
     mode: "onChange",
-    defaultValues: {
-      number: 0,
-      name: "",
-      content: "",
-    },
+    defaultValues: initialData
+      ? {
+          ...initialData,
+          number: initialData?.moduleNumber || 0,
+          name: initialData?.name || "",
+          content: initialData?.content || "",
+        }
+      : {
+          number: 0,
+          name: "",
+          content: "",
+        },
   });
 
   const onSubmit = async (values: z.infer<typeof ModuleSchema>) => {
     try {
       setIsPending(true);
-      const response = await createModule(values, courseId);
+      if (initialData) {
+        const response = await updateModule(values, courseId, moduleId as string);
       if (response.status === 200) {
-        toast.success("Module Created Successfully");
+        toast.success("Module updated successfully");
         router.push(`/pages/courses/${courseId}`);
         window.location.reload();
       } else if (response.status === 404) {
         toast.error(response.message);
       } else {
         toast.error(response.message);
+      }
+      } else {
+        const response = await createModule(values, courseId);
+        if (response.status === 200) {
+          toast.success("Module Created Successfully");
+          router.push(`/pages/courses/${courseId}`);
+          window.location.reload();
+        } else if (response.status === 404) {
+          toast.error(response.message);
+        } else {
+          toast.error(response.message);
+        }
       }
     } catch (error) {
       toast.error("Oops! something went wrong. Try again");
@@ -124,7 +153,9 @@ const AddModule = ({ courseId }: { courseId: string }) => {
             type="submit"
             className="bg-themeBlack mt-2 w-full border-themeGray rounded-xl"
           >
-            <Loader loading={isPending}>Submit Module</Loader>
+            <Loader loading={isPending}>
+              {initialData ? "Save Changes" : "Submit Module"}
+            </Loader>
           </Button>
         </div>
       </form>

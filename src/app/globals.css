@@ -5,6 +5,7 @@
 html {
   --scroll-behavior: smooth !important;
   scroll-behavior: smooth !important;
+  height: 100%;
 }
 
 @layer base {

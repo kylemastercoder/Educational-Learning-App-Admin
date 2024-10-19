@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
-import { archiveCourse, deleteCourse, getCourses } from "@/actions/course";
+import { deleteCourse, getArchivedCourses, retrieveCourse } from "@/actions/course";
 import { Card } from "@/components/ui/card";
 import { truncateString } from "@/lib/utils";
-import { ArchiveRestore, Edit, EllipsisVertical, Loader2, Notebook, Trash } from "lucide-react";
+import { Edit, EllipsisVertical, Loader2, Notebook, RotateCcw, Trash } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import {
@@ -20,7 +20,7 @@ import { Modal } from "@/components/ui/modal";
 import AlertModal from "@/components/ui/alert-modal";
 import ArchiveModal from "@/components/ui/archive-modal";
 
-const CourseList = () => {
+const ArchivedCourseList = () => {
   const [courses, setCourses] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [editModal, setEditModal] = useState(false);
@@ -31,7 +31,7 @@ const CourseList = () => {
   useEffect(() => {
     const fetchCourses = async () => {
       setLoading(true);
-      const { status, courses, message } = await getCourses();
+      const { status, courses, message } = await getArchivedCourses();
       if (status === 200) {
         if (courses) {
           setCourses(courses);
@@ -87,21 +87,29 @@ const CourseList = () => {
   const onArchive = async () => {
     setLoading(true);
     try {
-      const response = await archiveCourse(selectedCourse.id);
+      const response = await retrieveCourse(selectedCourse.id);
       if (response.status === 200) {
         setArchiveModal(false);
         toast.success(response.message);
         window.location.reload();
       } else {
-        toast.error(response.message || "Failed to delete course");
+        toast.error(response.message || "Failed to retrieve course");
       }
     } catch (error) {
-      console.error("Error archiving course:", error);
-      toast.error("Failed to archive course");
+      console.error("Error retrieving course:", error);
+      toast.error("Failed to retrieve course");
     } finally {
       setLoading(false);
     }
   };
+
+  if(!courses.length) {
+    return (
+      <div className="flex items-center">
+        <p className="text-lg text-themeTextGray">No archived courses available</p>
+      </div>
+    );
+  }
 
   return courses.map((course) => (
     <>
@@ -166,8 +174,8 @@ const CourseList = () => {
                       setArchiveModal(true);
                     }}
                   >
-                    <ArchiveRestore className="w-4 h-4 mr-2" />
-                    Archive
+                    <RotateCcw className="w-4 h-4 mr-2" />
+                    Retrieve
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -182,4 +190,4 @@ const CourseList = () => {
   ));
 };
 
-export default CourseList;
+export default ArchivedCourseList;

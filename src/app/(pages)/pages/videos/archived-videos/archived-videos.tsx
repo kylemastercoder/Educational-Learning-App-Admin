@@ -1,9 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
-import { archiveCourse, deleteCourse, getCourses } from "@/actions/course";
+
 import { Card } from "@/components/ui/card";
 import { truncateString } from "@/lib/utils";
-import { ArchiveRestore, Edit, EllipsisVertical, Loader2, Notebook, Trash } from "lucide-react";
+import {
+  Edit,
+  EllipsisVertical,
+  Loader2,
+  RotateCcw,
+  Trash,
+} from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import {
@@ -14,35 +20,36 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import CreateCourse from "@/components/forms/add-course";
-import { useRouter } from "next/navigation";
 import { Modal } from "@/components/ui/modal";
 import AlertModal from "@/components/ui/alert-modal";
 import ArchiveModal from "@/components/ui/archive-modal";
+import { deleteVideo, getArchivedVideos, retrieveVideo } from "@/actions/video";
+import CreateVideo from "@/components/forms/add-video";
+import Image from "next/image";
+import parse from "html-react-parser";
 
-const CourseList = () => {
-  const [courses, setCourses] = useState<any[]>([]);
+const ArchivedVideoList = () => {
+  const [videos, setVideos] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [editModal, setEditModal] = useState(false);
   const [deleteModal, setDeleteModal] = useState(false);
   const [archiveModal, setArchiveModal] = useState(false);
-  const [selectedCourse, setSelectedCourse] = useState<any>(null);
-  const router = useRouter();
+  const [selectedVideo, setSelectedVideo] = useState<any>(null);
   useEffect(() => {
-    const fetchCourses = async () => {
+    const fetchVideos = async () => {
       setLoading(true);
-      const { status, courses, message } = await getCourses();
+      const { status, videos, message } = await getArchivedVideos();
       if (status === 200) {
-        if (courses) {
-          setCourses(courses);
+        if (videos) {
+          setVideos(videos);
         }
       } else {
-        toast.error(message || "Failed to load courses.");
+        toast.error(message || "Failed to load videos.");
       }
       setLoading(false);
     };
 
-    fetchCourses();
+    fetchVideos();
   }, []);
 
   if (loading)
@@ -57,10 +64,10 @@ const CourseList = () => {
       <Modal
         isOpen={editModal}
         onClose={() => setEditModal(false)}
-        title="Update Course"
-        description="Update your course for your community"
+        title="Update Video"
+        description="Update your video for your community"
       >
-        <CreateCourse initialData={selectedCourse} /> {/* Pass isEditMode */}
+        <CreateVideo initialData={selectedVideo} />
       </Modal>
     );
   }
@@ -68,17 +75,17 @@ const CourseList = () => {
   const onDelete = async () => {
     setLoading(true);
     try {
-      const response = await deleteCourse(selectedCourse.id);
+      const response = await deleteVideo(selectedVideo.id);
       if (response.status === 200) {
         setDeleteModal(false);
-        toast.success("Course deleted successfully");
+        toast.success("Video deleted successfully");
         window.location.reload();
       } else {
-        toast.error(response.message || "Failed to delete course");
+        toast.error(response.message || "Failed to delete video");
       }
     } catch (error) {
-      console.error("Error deleting course:", error);
-      toast.error("Failed to delete course");
+      console.error("Error deleting video:", error);
+      toast.error("Failed to delete video");
     } finally {
       setLoading(false);
     }
@@ -87,23 +94,33 @@ const CourseList = () => {
   const onArchive = async () => {
     setLoading(true);
     try {
-      const response = await archiveCourse(selectedCourse.id);
+      const response = await retrieveVideo(selectedVideo.id);
       if (response.status === 200) {
         setArchiveModal(false);
         toast.success(response.message);
         window.location.reload();
       } else {
-        toast.error(response.message || "Failed to delete course");
+        toast.error(response.message || "Failed to retrieve video");
       }
     } catch (error) {
-      console.error("Error archiving course:", error);
-      toast.error("Failed to archive course");
+      console.error("Error retrieving video:", error);
+      toast.error("Failed to retrieve video");
     } finally {
       setLoading(false);
     }
   };
 
-  return courses.map((course) => (
+  if (!videos.length) {
+    return (
+      <div className="flex items-center">
+        <p className="text-lg text-themeTextGray">
+          No archived videos available
+        </p>
+      </div>
+    );
+  }
+
+  return videos.map((video) => (
     <>
       <AlertModal
         isOpen={deleteModal}
@@ -117,18 +134,20 @@ const CourseList = () => {
         onClose={() => setArchiveModal(false)}
         onConfirm={onArchive}
       />
-      <div key={course.id}>
-        <Card className="bg-transparent border-themeGray h-full rounded-xl overflow-hidden">
-          <img
-            src={course.imageUrl}
-            alt="cover"
-            className="h-4/6 w-full opacity-60"
-          />
+      <div key={video.id}>
+        <Card className="bg-transparent border-themeGray h-[430px] rounded-xl">
+          {/* Video Player */}
+          <div className="h-4/6 relative w-full">
+            <Image
+              src={video.thumbnail}
+              alt="Quiz Thumbnail"
+              fill
+              className="w-full h-full object-cover"
+            />
+          </div>
           <div className="h-2/6 flex flex-col justify-center px-5">
-            <div className="flex justify-between items-center">
-              <h2 className="text-lg text-white font-semibold">
-                {course.name}
-              </h2>
+            <div className="flex items-center justify-between">
+              <h2 className="text-lg text-white font-semibold">{video.name}</h2>
               <DropdownMenu>
                 <DropdownMenuTrigger>
                   <EllipsisVertical className="w-4 h-4" />
@@ -137,14 +156,8 @@ const CourseList = () => {
                   <DropdownMenuLabel>Actions</DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem
-                    onClick={() => router.push(`/pages/courses/${course.id}`)}
-                  >
-                    <Notebook className="w-4 h-4 mr-2" />
-                    Create Module
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
                     onClick={() => {
-                      setSelectedCourse(course); // Set the selected course data
+                      setSelectedVideo(video); // Set the selected video data
                       setEditModal(true);
                     }}
                   >
@@ -153,7 +166,7 @@ const CourseList = () => {
                   </DropdownMenuItem>
                   <DropdownMenuItem
                     onClick={() => {
-                      setSelectedCourse(course); // Set the selected course data
+                      setSelectedVideo(video); // Set the selected video data
                       setDeleteModal(true);
                     }}
                   >
@@ -162,18 +175,18 @@ const CourseList = () => {
                   </DropdownMenuItem>
                   <DropdownMenuItem
                     onClick={() => {
-                      setSelectedCourse(course);
+                      setSelectedVideo(video);
                       setArchiveModal(true);
                     }}
                   >
-                    <ArchiveRestore className="w-4 h-4 mr-2" />
-                    Archive
+                    <RotateCcw className="w-4 h-4 mr-2" />
+                    Restore
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
             <p className="text-sm text-themeTextGray">
-              {truncateString(course.description)}
+              {parse(truncateString(video.description))}
             </p>
           </div>
         </Card>
@@ -182,4 +195,4 @@ const CourseList = () => {
   ));
 };
 
-export default CourseList;
+export default ArchivedVideoList;

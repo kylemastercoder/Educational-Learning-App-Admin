@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
-import { deleteVideo, getVideos } from "@/actions/video";
+import { archiveVideo, deleteVideo, getVideos } from "@/actions/video";
 import { Card } from "@/components/ui/card";
 import { truncateString } from "@/lib/utils";
-import { Loader2, Edit, EllipsisVertical, Trash } from "lucide-react";
+import { Loader2, Edit, EllipsisVertical, Trash, ArchiveRestore } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import parse from "html-react-parser";
@@ -19,12 +19,14 @@ import { Modal } from "@/components/ui/modal";
 import CreateVideo from "@/components/forms/add-video";
 import AlertModal from "@/components/ui/alert-modal";
 import Image from "next/image";
+import ArchiveModal from "@/components/ui/archive-modal";
 
 const VideoList = () => {
   const [videos, setVideos] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [editModal, setEditModal] = useState(false);
   const [deleteModal, setDeleteModal] = useState(false);
+  const [archiveModal, setArchiveModal] = useState(false);
   const [selectedVideo, setSelectedVideo] = useState<any>(null);
   useEffect(() => {
     const fetchVideos = async () => {
@@ -82,6 +84,25 @@ const VideoList = () => {
     }
   };
 
+  const onArchive = async () => {
+    setLoading(true);
+    try {
+      const response = await archiveVideo(selectedVideo.id);
+      if (response.status === 200) {
+        setArchiveModal(false);
+        toast.success(response.message);
+        window.location.reload();
+      } else {
+        toast.error(response.message || "Failed to delete video lectures");
+      }
+    } catch (error) {
+      console.error("Error archiving video lectures:", error);
+      toast.error("Failed to archive video lectures");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return videos.map((video) => (
     <>
       <AlertModal
@@ -90,8 +111,14 @@ const VideoList = () => {
         onClose={() => setDeleteModal(false)}
         onConfirm={onDelete}
       />
+      <ArchiveModal
+        isOpen={archiveModal}
+        loading={loading}
+        onClose={() => setArchiveModal(false)}
+        onConfirm={onArchive}
+      />
       <div key={video.id}>
-        <Card className="bg-transparent border-themeGray h-full rounded-xl overflow-hidden">
+        <Card className="bg-transparent border-themeGray h-[430px] rounded-xl">
           {/* Video Player */}
           <div className="h-4/6 relative w-full">
             <Image
@@ -128,6 +155,15 @@ const VideoList = () => {
                   >
                     <Trash className="w-4 h-4 mr-2" />
                     Delete
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={() => {
+                      setSelectedVideo(video);
+                      setArchiveModal(true);
+                    }}
+                  >
+                    <ArchiveRestore className="w-4 h-4 mr-2" />
+                    Archive
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>

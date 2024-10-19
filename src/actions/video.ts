@@ -10,6 +10,8 @@ import {
   getDocs,
   query,
   setDoc,
+  updateDoc,
+  where,
 } from "firebase/firestore";
 import { z } from "zod";
 
@@ -37,6 +39,7 @@ export const createVideo = async (values: z.infer<typeof VideoSchema>) => {
       userId: clerkId,
       method: method,
       thumbnail: thumbnail,
+      isArchive: false,
       createdAt: new Date().toISOString(),
     });
 
@@ -53,8 +56,44 @@ export const createVideo = async (values: z.infer<typeof VideoSchema>) => {
 
 export const getVideos = async () => {
   try {
-    const q = query(collection(db, "Videos"));
-    const querySnapshot = await getDocs(q);
+    const videoQuery = query(
+      collection(db, "Videos"),
+      where("isArchive", "==", false)
+    );
+    const querySnapshot = await getDocs(videoQuery);
+
+    if (!querySnapshot.empty) {
+      const videoDocs = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+
+      return {
+        status: 200,
+        videos: videoDocs,
+      };
+    }
+
+    return {
+      status: 404,
+      message: "No videos found",
+    };
+  } catch (error) {
+    console.error("Error fetching videos:", error);
+    return {
+      status: 400,
+      message: "Failed to fetch videos",
+    };
+  }
+};
+
+export const getArchivedVideos = async () => {
+  try {
+    const videoQuery = query(
+      collection(db, "Videos"),
+      where("isArchive", "==", true)
+    );
+    const querySnapshot = await getDocs(videoQuery);
 
     if (!querySnapshot.empty) {
       const videoDocs = querySnapshot.docs.map((doc) => ({
@@ -101,6 +140,62 @@ export const deleteVideo = async (videoId: string) => {
     };
   } catch (error) {
     console.error("Error deleting videos: ", error);
+    return {
+      status: 400,
+      message: "Oops! Something went wrong. Try again",
+    };
+  }
+};
+
+export const archiveVideo = async (videoId: string) => {
+  const user = await currentUser();
+
+  if (!user) return { status: 404, message: "Unauthenticated!" };
+
+  if (!videoId) return { status: 400, message: "Video ID is required" };
+
+  try {
+    // Reference to the course document
+    const videRef = doc(db, "Videos", videoId);
+
+    await updateDoc(videRef, {
+      isArchive: true,
+    });
+
+    return {
+      status: 200,
+      message: "Video lectures archived successfully",
+    };
+  } catch (error) {
+    console.error("Error archiving video lectures: ", error);
+    return {
+      status: 400,
+      message: "Oops! Something went wrong. Try again",
+    };
+  }
+};
+
+export const retrieveVideo = async (videoId: string) => {
+  const user = await currentUser();
+
+  if (!user) return { status: 404, message: "Unauthenticated!" };
+
+  if (!videoId) return { status: 400, message: "Video ID is required" };
+
+  try {
+    // Reference to the course document
+    const videRef = doc(db, "Videos", videoId);
+
+    await updateDoc(videRef, {
+      isArchive: false,
+    });
+
+    return {
+      status: 200,
+      message: "Video lectures retrieve successfully",
+    };
+  } catch (error) {
+    console.error("Error retrieving video lectures: ", error);
     return {
       status: 400,
       message: "Oops! Something went wrong. Try again",
