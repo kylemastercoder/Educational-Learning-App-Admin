@@ -37,7 +37,7 @@ const ArchivedCourseList = () => {
           setCourses(courses);
         }
       } else {
-        toast.error(message || "Failed to load courses.");
+        toast.error(message || "Failed to load modules.");
       }
       setLoading(false);
     };
@@ -57,8 +57,8 @@ const ArchivedCourseList = () => {
       <Modal
         isOpen={editModal}
         onClose={() => setEditModal(false)}
-        title="Update Course"
-        description="Update your course for your community"
+        title="Update Module"
+        description="Update your modules for your community"
       >
         <CreateCourse initialData={selectedCourse} /> {/* Pass isEditMode */}
       </Modal>
@@ -71,14 +71,14 @@ const ArchivedCourseList = () => {
       const response = await deleteCourse(selectedCourse.id);
       if (response.status === 200) {
         setDeleteModal(false);
-        toast.success("Course deleted successfully");
+        toast.success("Module deleted successfully");
         window.location.reload();
       } else {
-        toast.error(response.message || "Failed to delete course");
+        toast.error(response.message || "Failed to delete module");
       }
     } catch (error) {
-      console.error("Error deleting course:", error);
-      toast.error("Failed to delete course");
+      console.error("Error deleting module:", error);
+      toast.error("Failed to delete module");
     } finally {
       setLoading(false);
     }
@@ -93,11 +93,11 @@ const ArchivedCourseList = () => {
         toast.success(response.message);
         window.location.reload();
       } else {
-        toast.error(response.message || "Failed to retrieve course");
+        toast.error(response.message || "Failed to retrieve module");
       }
     } catch (error) {
-      console.error("Error retrieving course:", error);
-      toast.error("Failed to retrieve course");
+      console.error("Error retrieving module:", error);
+      toast.error("Failed to retrieve module");
     } finally {
       setLoading(false);
     }
@@ -106,7 +106,7 @@ const ArchivedCourseList = () => {
   if(!courses.length) {
     return (
       <div className="flex items-center">
-        <p className="text-lg text-themeTextGray">No archived courses available</p>
+        <p className="text-lg text-themeTextGray">No archived modules available</p>
       </div>
     );
   }
@@ -148,7 +148,7 @@ const ArchivedCourseList = () => {
                     onClick={() => router.push(`/pages/courses/${course.id}`)}
                   >
                     <Notebook className="w-4 h-4 mr-2" />
-                    Create Module
+                    Create Topic
                   </DropdownMenuItem>
                   <DropdownMenuItem
                     onClick={() => {

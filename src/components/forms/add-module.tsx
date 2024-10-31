@@ -21,11 +21,12 @@ import { createModule, updateModule } from "@/actions/course";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import RichTextEditor from "../global/rich-text-editor";
+import ImageUpload from "../global/image-upload";
 
 const AddModule = ({
   courseId,
   initialData,
-  moduleId
+  moduleId,
 }: {
   courseId: string;
   initialData?: any;
@@ -47,6 +48,7 @@ const AddModule = ({
           number: 0,
           name: "",
           content: "",
+          imagesUrl: [],
         },
   });
 
@@ -54,20 +56,24 @@ const AddModule = ({
     try {
       setIsPending(true);
       if (initialData) {
-        const response = await updateModule(values, courseId, moduleId as string);
-      if (response.status === 200) {
-        toast.success("Module updated successfully");
-        router.push(`/pages/courses/${courseId}`);
-        window.location.reload();
-      } else if (response.status === 404) {
-        toast.error(response.message);
-      } else {
-        toast.error(response.message);
-      }
+        const response = await updateModule(
+          values,
+          courseId,
+          moduleId as string
+        );
+        if (response.status === 200) {
+          toast.success("Topic updated successfully");
+          router.push(`/pages/courses/${courseId}`);
+          window.location.reload();
+        } else if (response.status === 404) {
+          toast.error(response.message);
+        } else {
+          toast.error(response.message);
+        }
       } else {
         const response = await createModule(values, courseId);
         if (response.status === 200) {
-          toast.success("Module Created Successfully");
+          toast.success("Topic Created Successfully");
           router.push(`/pages/courses/${courseId}`);
           window.location.reload();
         } else if (response.status === 404) {
@@ -95,7 +101,7 @@ const AddModule = ({
             render={({ field }) => (
               <FormItem className="mb-3">
                 <FormLabel className="flex flex-col gap-2">
-                  Module Number
+                  Topic Number
                 </FormLabel>
                 <FormControl>
                   <Input
@@ -116,7 +122,7 @@ const AddModule = ({
             render={({ field }) => (
               <FormItem className="mb-3">
                 <FormLabel className="flex flex-col gap-2">
-                  Module Name
+                  Topic Name
                 </FormLabel>
                 <FormControl>
                   <Input
@@ -136,12 +142,31 @@ const AddModule = ({
             render={({ field }) => (
               <FormItem className="mb-3">
                 <FormLabel className="flex flex-col gap-2">
-                  Module Content
+                  Topic Content
                 </FormLabel>
                 <FormControl>
                   <RichTextEditor
                     description={field.value}
                     onChange={field.onChange}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            disabled={isPending}
+            name="imagesUrl"
+            render={({ field }) => (
+              <FormItem className="mb-3">
+                <FormLabel className="flex flex-col gap-2">
+                  Topic Images
+                </FormLabel>
+                <FormControl>
+                  <ImageUpload
+                    onImageUpload={(data) => field.onChange(data)}
+                    initialImageUrls={initialData?.imageUrl} // Pass existing image URL
                   />
                 </FormControl>
                 <FormMessage />
@@ -154,7 +179,7 @@ const AddModule = ({
             className="bg-themeBlack mt-2 w-full border-themeGray rounded-xl"
           >
             <Loader loading={isPending}>
-              {initialData ? "Save Changes" : "Submit Module"}
+              {initialData ? "Save Changes" : "Submit Topic"}
             </Loader>
           </Button>
         </div>

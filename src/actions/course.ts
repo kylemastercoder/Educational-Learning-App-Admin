@@ -160,7 +160,7 @@ export const createModule = async (
     return { status: 400, message: `Validation Error: ${errors.join(", ")}` };
   }
 
-  const { name, number, content } = validatedField.data;
+  const { name, number, content, imagesUrl } = validatedField.data;
 
   try {
     const moduleRef = doc(collection(db, "Modules"));
@@ -170,6 +170,7 @@ export const createModule = async (
       content: content,
       userId: clerkId,
       courseId: courseId,
+      imagesUrl: imagesUrl,
       createdAt: new Date().toISOString(),
     });
 
@@ -201,16 +202,17 @@ export const updateModule = async (
     return { status: 400, message: `Validation Error: ${errors.join(", ")}` };
   }
 
-  const { name, number, content } = validatedField.data;
+  const { name, number, content, imagesUrl } = validatedField.data;
 
   try {
-    const moduleRef = doc(db, "Modules", moduleId); 
+    const moduleRef = doc(db, "Modules", moduleId);
     await updateDoc(moduleRef, {
       moduleNumber: number,
       name: name,
       content: content,
       userId: clerkId,
       courseId: courseId,
+      imagesUrl: imagesUrl,
       createdAt: new Date().toISOString(),
     });
 
@@ -401,6 +403,39 @@ export const updateCourse = async (
     return {
       status: 400,
       message: "Oops! something went wrong. Try again",
+    };
+  }
+};
+
+export const getViewedCourses = async (studentId: string) => {
+  try {
+    const courseQuery = query(
+      collection(db, "ViewedCourse"),
+      where("userId", "array-contains", studentId)
+    );
+    const courseSnapshot = await getDocs(courseQuery);
+
+    if (courseSnapshot.empty) {
+      return {
+        status: 404,
+        message: "No courses found",
+      };
+    }
+
+    const viewedCourses = courseSnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+
+    return {
+      status: 200,
+      viewedCourses,
+    };
+  } catch (error) {
+    console.error("Error fetching courses:", error);
+    return {
+      status: 400,
+      message: "Failed to fetch courses",
     };
   }
 };

@@ -69,10 +69,6 @@ export const columns: ColumnDef<StudentColumn>[] = [
     header: "Course",
   },
   {
-    accessorKey: "block",
-    header: "Block",
-  },
-  {
     id: "actions",
     header: "Actions",
     cell: ({ row }) => <CellAction data={row.original} />,

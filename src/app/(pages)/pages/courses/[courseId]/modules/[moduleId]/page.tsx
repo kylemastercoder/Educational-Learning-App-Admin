@@ -18,6 +18,7 @@ import {
 import { Modal } from "@/components/ui/modal";
 import AddModule from "@/components/forms/add-module";
 import AlertModal from "@/components/ui/alert-modal";
+import Image from "next/image";
 
 type ModulePageProps = {
   params: {
@@ -44,10 +45,10 @@ const ModulePage = ({ params }: ModulePageProps) => {
           );
           setModule(selectedModule || null);
         } else {
-          toast.error("Failed to load module.");
+          toast.error("Failed to load topic.");
         }
       } catch (error) {
-        toast.error("An error occurred while fetching the module.");
+        toast.error("An error occurred while fetching the topic.");
       }
       setLoading(false);
     };
@@ -76,8 +77,8 @@ const ModulePage = ({ params }: ModulePageProps) => {
       <Modal
         isOpen={editModal}
         onClose={() => setEditModal(false)}
-        title="Update Module"
-        description="Update your module for your community"
+        title="Update Topic"
+        description="Update your topic for your community"
       >
         <AddModule
           courseId={params.courseId}
@@ -94,14 +95,14 @@ const ModulePage = ({ params }: ModulePageProps) => {
       const response = await deleteModule(selectedModule.id);
       if (response.status === 200) {
         setDeleteModal(false);
-        toast.success("Module deleted successfully");
+        toast.success("Topic deleted successfully");
         window.location.reload();
       } else {
-        toast.error(response.message || "Failed to delete module");
+        toast.error(response.message || "Failed to delete topic");
       }
     } catch (error) {
-      console.error("Error deleting module:", error);
-      toast.error("Failed to delete module");
+      console.error("Error deleting topic:", error);
+      toast.error("Failed to delete topic");
     } finally {
       setLoading(false);
     }
@@ -145,6 +146,18 @@ const ModulePage = ({ params }: ModulePageProps) => {
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
+        </div>
+        <div className="flex items-center justify-center gap-5">
+          {module.imagesUrl?.length > 0 &&
+            module.imagesUrl.map((image: string) => (
+              <Image
+                key={image}
+                src={image}
+                alt="Images"
+                width={400}
+                height={400}
+              />
+            ))}
         </div>
         <div className="mt-3">{parse(module.content)}</div>
       </div>

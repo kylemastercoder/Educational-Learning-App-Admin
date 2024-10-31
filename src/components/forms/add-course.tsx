@@ -49,7 +49,7 @@ const CreateCourse = ({ initialData }: { initialData?: any }) => {
       if (initialData) {
         const response = await updateCourse(values, initialData.id);
         if (response.status === 200) {
-          toast.success("Course Updated Successfully");
+          toast.success("Module Updated Successfully");
           router.push("/pages/courses");
           window.location.assign("/pages/courses");
         } else if (response.status === 404) {
@@ -60,7 +60,7 @@ const CreateCourse = ({ initialData }: { initialData?: any }) => {
       } else {
         const response = await createCourse(values);
         if (response.status === 200) {
-          toast.success("Course Created Successfully");
+          toast.success("Module Created Successfully");
           router.push("/pages/courses");
           window.location.assign("/pages/courses");
         } else if (response.status === 404) {
@@ -88,7 +88,7 @@ const CreateCourse = ({ initialData }: { initialData?: any }) => {
             render={({ field }) => (
               <FormItem className="mb-3">
                 <FormLabel className="flex flex-col gap-2">
-                  Course Name
+                  Module Name
                 </FormLabel>
                 <FormControl>
                   <Input
@@ -108,12 +108,12 @@ const CreateCourse = ({ initialData }: { initialData?: any }) => {
             render={({ field }) => (
               <FormItem className="mb-3">
                 <FormLabel className="flex flex-col gap-2">
-                  Course Description
+                  Module Description
                 </FormLabel>
                 <FormControl>
                   <Textarea
                     className="bg-themeBlack border-themeGray text-themeTextGray"
-                    placeholder="Enter Course Description"
+                    placeholder="Enter Module Description"
                     {...field}
                   />
                 </FormControl>
@@ -128,12 +128,12 @@ const CreateCourse = ({ initialData }: { initialData?: any }) => {
             render={({ field }) => (
               <FormItem className="mb-3">
                 <FormLabel className="flex flex-col gap-2">
-                  Course Thumbnail
+                  Module Thumbnail
                 </FormLabel>
                 <FormControl>
                   <ImageUpload
                     onImageUpload={(data) => field.onChange(data)}
-                    initialImageUrl={initialData?.imageUrl} // Pass existing image URL
+                    initialImageUrls={initialData?.imagesUrl} // Pass existing image URL
                   />
                 </FormControl>
                 <FormMessage />

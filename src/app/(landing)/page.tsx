@@ -53,7 +53,7 @@ const LandingPage = () => {
       </div>
       {/* COURSES */}
       <section>
-        <p className="text-3xl font-bold text-center">Courses Offered</p>
+        <p className="text-3xl font-bold text-center">Modules Offered</p>
         <div>
           {loading ? (
             <Loader2
@@ -77,7 +77,7 @@ const LandingPage = () => {
                       <div className="flex items-center gap-1 mt-1 mb-1">
                         <NotebookIcon className="w-4 h-4" />
                         <p className="text-sm text-white ">
-                          {course.moduleCount || 0} modules
+                          {course.moduleCount || 0} topics
                         </p>
                       </div>
 

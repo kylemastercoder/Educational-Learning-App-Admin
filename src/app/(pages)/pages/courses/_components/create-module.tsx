@@ -42,10 +42,10 @@ export const CreateCourseModule = ({ courseId }: CreateCourseModuleProps) => {
           });
           setSortedModules(sorted);
         } else {
-          toast.error(message || "Failed to load modules.");
+          toast.error(message || "Failed to load topics.");
         }
       } catch (error) {
-        toast.error("An error occurred while fetching modules.");
+        toast.error("An error occurred while fetching topics.");
       }
       setLoading(false);
     };
@@ -59,8 +59,8 @@ export const CreateCourseModule = ({ courseId }: CreateCourseModuleProps) => {
     <div className="flex flex-col">
       <GlassModal
         className="max-h-screen overflow-auto"
-        title="Create a new module for your course"
-        description="Modules are a great way to organize your course content."
+        title="Create a new topic for your course"
+        description="Topics are a great way to organize your module content."
         trigger={
           <div className="flex flex-col gap-y-2">
             <Button
@@ -68,7 +68,7 @@ export const CreateCourseModule = ({ courseId }: CreateCourseModuleProps) => {
               className="flex items-center bg-themeBlack hover:bg-themeDarkGray"
             >
               <PlusCircle className="w-4 h-4 mr-2" />
-              Create Module
+              Create Topic
             </Button>
           </div>
         }

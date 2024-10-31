@@ -37,7 +37,7 @@ const CourseList = () => {
           setCourses(courses);
         }
       } else {
-        toast.error(message || "Failed to load courses.");
+        toast.error(message || "Failed to load module.");
       }
       setLoading(false);
     };
@@ -57,8 +57,8 @@ const CourseList = () => {
       <Modal
         isOpen={editModal}
         onClose={() => setEditModal(false)}
-        title="Update Course"
-        description="Update your course for your community"
+        title="Update Module"
+        description="Update your module for your community"
       >
         <CreateCourse initialData={selectedCourse} /> {/* Pass isEditMode */}
       </Modal>
@@ -71,14 +71,14 @@ const CourseList = () => {
       const response = await deleteCourse(selectedCourse.id);
       if (response.status === 200) {
         setDeleteModal(false);
-        toast.success("Course deleted successfully");
+        toast.success("Module deleted successfully");
         window.location.reload();
       } else {
-        toast.error(response.message || "Failed to delete course");
+        toast.error(response.message || "Failed to delete module");
       }
     } catch (error) {
-      console.error("Error deleting course:", error);
-      toast.error("Failed to delete course");
+      console.error("Error deleting module:", error);
+      toast.error("Failed to delete module");
     } finally {
       setLoading(false);
     }
@@ -140,7 +140,7 @@ const CourseList = () => {
                     onClick={() => router.push(`/pages/courses/${course.id}`)}
                   >
                     <Notebook className="w-4 h-4 mr-2" />
-                    Create Module
+                    Create Topic
                   </DropdownMenuItem>
                   <DropdownMenuItem
                     onClick={() => {

@@ -11,11 +11,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Copy, MoreHorizontal, Trash } from "lucide-react";
+import { ChartArea, Copy, Edit, MoreHorizontal, Trash } from "lucide-react";
 import { toast } from "sonner";
-import { useParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import AlertModal from "@/components/ui/alert-modal";
+import { deleteStudents } from "@/actions/students";
 
 interface CellActionProps {
   data: StudentColumn;
@@ -23,7 +24,6 @@ interface CellActionProps {
 
 export const CellAction: React.FC<CellActionProps> = ({ data }) => {
   const router = useRouter();
-  const params = useParams();
   const [isLoading, setIsLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const onCopy = (name: string) => {
@@ -32,18 +32,22 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
   };
 
   const onDelete = async () => {
-    // try {
-    //   setIsLoading(true);
-    //   await axios.delete(`/api/${params.storeId}/product/${data.id}`);
-    //   router.refresh();
-    //   toast.success("Product deleted successfully.");
-    // } catch (error) {
-    //   toast.error("Something went wrong.");
-    //   console.log(error);
-    // } finally {
-    //   setIsLoading(false);
-    //   setOpen(false);
-    // }
+    try {
+      setIsLoading(true);
+      const response = await deleteStudents(data.id)
+      if(response.status === 200) {
+        toast.success(response.message || "Student deleted successfully.");
+        window.location.reload();
+      } else {
+        toast.error(response.message || "Failed to delete student.");
+      }
+    } catch (error) {
+      toast.error("Something went wrong.");
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+      setOpen(false);
+    }
   };
 
   return (
@@ -63,6 +67,14 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
+          <DropdownMenuItem onClick={() => router.push(`/pages/students/progress/${data.id}`)}>
+            <ChartArea className="w-4 h-4 mr-2" />
+            View Progress
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => router.push(`/pages/students/${data.id}`)}>
+            <Edit className="w-4 h-4 mr-2" />
+            Update
+          </DropdownMenuItem>
           <DropdownMenuItem onClick={() => onCopy(data.name)}>
             <Copy className="w-4 h-4 mr-2" />
             Copy

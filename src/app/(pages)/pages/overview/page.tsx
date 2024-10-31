@@ -29,6 +29,11 @@ interface Codes {
   imageUrl: string;
 }
 
+interface Students {
+  id: string;
+  name: string;
+}
+
 const Overview = () => {
   const [courses, setCourses] = React.useState<Course[]>([]);
   React.useEffect(() => {
@@ -146,8 +151,35 @@ const Overview = () => {
 
     fetchCodes();
   }, []);
+  const [students, setStudents] = React.useState<Students[]>([]);
+  React.useEffect(() => {
+    const fetchStudents = async () => {
+      try {
+        const studentsQuery = query(collection(db, "Users"));
+        const studentsSnapshot = await getDocs(studentsQuery);
+
+        if (!studentsSnapshot.empty) {
+          const studentsDocs = await Promise.all(
+            studentsSnapshot.docs.map(async (doc) => {
+              const studentsData = doc.data();
+
+              return {
+                id: doc.id,
+                name: studentsData.name,
+              };
+            })
+          );
+          setStudents(studentsDocs);
+        }
+      } catch (error) {
+        console.error("Error fetching students:", error);
+      }
+    };
+
+    fetchStudents();
+  }, []);
   return (
-    <div className="container grid md:grid-cols-2 grid-cols-1 lg:grid-cols-3 2xl:grid-cols-4 py-10 gap-5">
+    <div className="container grid md:grid-cols-2 grid-cols-1 lg:grid-cols-3 2xl:grid-cols-5 py-10 gap-5">
       <Card className="bg-emerald-950">
         <CardHeader>
           <CardTitle>Total Courses</CardTitle>
@@ -178,6 +210,14 @@ const Overview = () => {
         </CardHeader>
         <CardContent>
           <p className="text-2xl font-bold">{codes.length}</p>
+        </CardContent>
+      </Card>
+      <Card className="bg-pink-950">
+        <CardHeader>
+          <CardTitle>Total Students</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-2xl font-bold">{students.length}</p>
         </CardContent>
       </Card>
     </div>

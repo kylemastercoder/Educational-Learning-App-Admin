@@ -35,15 +35,18 @@ export const SignUpSchema = z.object({
 });
 
 export const CourseSchema = z.object({
-  name: z.string().min(1, { message: "Course name is required" }),
-  description: z.string().min(1, { message: "Course description is required" }),
-  imageUrl: z.string().min(1, { message: "Course image is required" }),
+  name: z.string().min(1, { message: "Module name is required" }),
+  description: z.string().min(1, { message: "Module description is required" }),
+  imageUrl: z.string().min(1, { message: "Module image is required" }),
 });
 
 export const ModuleSchema = z.object({
-  number: z.coerce.number().min(1, { message: "Module number is required" }),
-  name: z.string().min(1, { message: "Module name is required" }),
-  content: z.string().min(1, { message: "Module content is required" }),
+  number: z.coerce.number().min(1, { message: "Topic number is required" }),
+  name: z.string().min(1, { message: "Topic name is required" }),
+  content: z.string().min(1, { message: "Topic content is required" }),
+  imagesUrl: z
+    .array(z.string().min(1, { message: "Provide atleast one image" }))
+    .min(1, { message: "Topic images are required" }),
 });
 
 export const CourseContentSchema = z.object({
@@ -78,13 +81,17 @@ export const VideoSchema = z.object({
 });
 
 export const QuizSchema = z.object({
-  howManyQuiz: z.coerce.number().min(1, { message: "You must have atleast 1 question" }),
+  howManyQuiz: z.coerce
+    .number()
+    .min(1, { message: "You must have atleast 1 question" }),
   type: z.enum(["multipleChoice", "trueFalse"]),
   questions: z.array(
     z.object({
-      question: z.string().min(1, {message: "Question is required"}),
+      question: z.string().min(1, { message: "Question is required" }),
       answers: z.string().optional(),
-      correctAnswer: z.string().min(1, {message: "Correct answer is required"}),
+      correctAnswer: z
+        .string()
+        .min(1, { message: "Correct answer is required" }),
     })
   ),
 });
@@ -93,4 +100,14 @@ export const CodeSchema = z.object({
   title: z.string().min(1, { message: "Title is required" }),
   description: z.string().min(1, { message: "Description is required" }),
   correctOutput: z.string().min(1, { message: "Correct output is required" }),
+});
+
+export const UpdateStudentSchema = z.object({
+  name: z.string().min(1, { message: "Name is required" }),
+  email: z.string().min(1, { message: "Email address is required" }),
+  birthdate: z.string().min(1, { message: "Birthdate is required" }),
+  age: z.string().min(1, { message: "Age is required" }),
+  course: z.string().min(1, { message: "Course is required" }),
+  gender: z.string().min(1, { message: "Gender is required" }),
+  username: z.string().min(1, { message: "Username is required" }),
 });
