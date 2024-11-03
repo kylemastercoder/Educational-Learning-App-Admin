@@ -29,47 +29,34 @@ const VideoLectureProgress = () => {
     try {
       const videoQuery = query(collection(db, "Videos"));
       const videoSnapshot = await getDocs(videoQuery);
-
+  
       if (!videoSnapshot.empty) {
         const studentId = Array.isArray(params?.studentId)
           ? params.studentId[0]
           : params?.studentId;
-
+  
         const viewedVideoIds = await getViewedVideos(studentId);
-        let totalProgress = 0;
-
-        const videoDocs = await Promise.all(
-          videoSnapshot.docs.map(async (doc) => {
-            const videoId = doc.id;
-
-            const totalVideos = videoDocs.length;
-            const viewedModules = viewedVideoIds.includes(videoId)
-              ? totalVideos
-              : 0;
-
-            // Calculate progress for this course
-            const videoProgress =
-            totalVideos > 0
-                ? (viewedModules / totalVideos) * 100
-                : 0;
-
-            totalProgress += videoProgress;
-          })
-        );
-
-        // Calculate the average progress across all courses
-        const averageProgress =
-          videoDocs.length > 0 ? totalProgress / videoDocs.length : 0;
-        setOverallProgress(averageProgress);
+        const totalVideos = videoSnapshot.docs.length;
+  
+        // Count the number of videos that the student has viewed
+        const viewedCount = videoSnapshot.docs.filter((doc) =>
+          viewedVideoIds.includes(doc.id)
+        ).length;
+  
+        // Calculate progress as the percentage of viewed videos
+        const progress = totalVideos > 0 ? (viewedCount / totalVideos) * 100 : 0;
+        setOverallProgress(progress);
       }
     } catch (error) {
       console.error("Error fetching video lectures:", error);
     }
   };
+  
 
   useEffect(() => {
     fetchVideos();
   }, [params?.studentId]);
+
   return (
     <Card>
       <CardContent className="p-5">

@@ -36,31 +36,16 @@ const QuizzesProgress = () => {
           : params?.studentId;
 
         const viewedQuizIds = await getViewedQuizzes(studentId);
-        let totalProgress = 0;
+        const totalQuizzes = quizSnapshot.docs.length;
 
-        const quizDocs = await Promise.all(
-          quizSnapshot.docs.map(async (doc) => {
-            const quizId = doc.id;
+        const viewedCount = quizSnapshot.docs.filter((doc) =>
+          viewedQuizIds.includes(doc.id)
+        ).length;
 
-            const totalQuizzes = quizDocs.length;
-            const viewedModules = viewedQuizIds.includes(quizId)
-              ? totalQuizzes
-              : 0;
-
-            // Calculate progress for this course
-            const quizProgress =
-            totalQuizzes > 0
-                ? (viewedModules / totalQuizzes) * 100
-                : 0;
-
-            totalProgress += quizProgress;
-          })
-        );
-
-        // Calculate the average progress across all courses
-        const averageProgress =
-          quizDocs.length > 0 ? totalProgress / quizDocs.length : 0;
-        setOverallProgress(averageProgress);
+        // Calculate progress as the percentage of viewed videos
+        const progress =
+          totalQuizzes > 0 ? (viewedCount / totalQuizzes) * 100 : 0;
+        setOverallProgress(progress);
       }
     } catch (error) {
       console.error("Error fetching quizzes:", error);

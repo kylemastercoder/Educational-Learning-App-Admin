@@ -18,7 +18,7 @@ const CodeChallengeProgress = () => {
       );
       const viewedSnapshot = await getDocs(viewedQuery);
 
-      return viewedSnapshot.docs.map((doc) => doc.data().quizId);
+      return viewedSnapshot.docs.map((doc) => doc.data().codeId);
     } catch (error) {
       console.error("Error fetching code challenges:", error);
       return [];
@@ -27,40 +27,23 @@ const CodeChallengeProgress = () => {
 
   const fetchCode = async () => {
     try {
-      const quizQuery = query(collection(db, "CodeChallenges"));
-      const quizSnapshot = await getDocs(quizQuery);
+      const codeQuery = query(collection(db, "CodeChallenges"));
+      const codeSnapshot = await getDocs(codeQuery);
 
-      if (!quizSnapshot.empty) {
+      if (!codeSnapshot.empty) {
         const studentId = Array.isArray(params?.studentId)
           ? params.studentId[0]
           : params?.studentId;
 
-        const viewedQuizIds = await getViewedCode(studentId);
-        let totalProgress = 0;
+        const viewedCodeIds = await getViewedCode(studentId);
+        const totalCode = codeSnapshot.docs.length;
 
-        const quizDocs = await Promise.all(
-          quizSnapshot.docs.map(async (doc) => {
-            const quizId = doc.id;
+        const viewedCount = codeSnapshot.docs.filter((doc) =>
+          viewedCodeIds.includes(doc.id)
+        ).length;
 
-            const totalQuizzes = quizDocs.length;
-            const viewedModules = viewedQuizIds.includes(quizId)
-              ? totalQuizzes
-              : 0;
-
-            // Calculate progress for this course
-            const quizProgress =
-            totalQuizzes > 0
-                ? (viewedModules / totalQuizzes) * 100
-                : 0;
-
-            totalProgress += quizProgress;
-          })
-        );
-
-        // Calculate the average progress across all courses
-        const averageProgress =
-          quizDocs.length > 0 ? totalProgress / quizDocs.length : 0;
-        setOverallProgress(averageProgress);
+        const progress = totalCode > 0 ? (viewedCount / totalCode) * 100 : 0;
+        setOverallProgress(progress);
       }
     } catch (error) {
       console.error("Error fetching code challenges:", error);
