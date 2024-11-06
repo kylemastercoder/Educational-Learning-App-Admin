@@ -21,6 +21,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import RichTextEditor from "../global/rich-text-editor";
 import { createCode, updateCode } from "@/actions/code";
+import ImageUpload from "../global/image-upload";
 
 const CreateCode = ({ initialData }: { initialData: any }) => {
   const [isPending, setIsPending] = useState(false);
@@ -33,11 +34,13 @@ const CreateCode = ({ initialData }: { initialData: any }) => {
           title: initialData.title || "",
           description: initialData.description || "",
           correctOutput: initialData.correctOutput || "",
+          imageUrl: initialData.imageUrl || "",
         }
       : {
           title: "",
           description: "",
           correctOutput: "",
+          imageUrl: "",
         },
   });
 
@@ -130,6 +133,25 @@ const CreateCode = ({ initialData }: { initialData: any }) => {
                     className="bg-themeBlack border-themeGray text-themeTextGray"
                     placeholder="Hello World"
                     {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            disabled={isPending}
+            name="imageUrl"
+            render={({ field }) => (
+              <FormItem className="mb-3">
+                <FormLabel className="flex flex-col gap-2">
+                  Thumbnail
+                </FormLabel>
+                <FormControl>
+                  <ImageUpload
+                    onImageUpload={(data) => field.onChange(data)}
+                    initialImageUrl={initialData?.imageUrl}
                   />
                 </FormControl>
                 <FormMessage />

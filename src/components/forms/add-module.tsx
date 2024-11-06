@@ -21,7 +21,7 @@ import { createModule, updateModule } from "@/actions/course";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import RichTextEditor from "../global/rich-text-editor";
-import ImageUpload from "../global/image-upload";
+import MultipleImageUpload from "../global/image-many-upload";
 
 const AddModule = ({
   courseId,
@@ -164,9 +164,9 @@ const AddModule = ({
                   Topic Images
                 </FormLabel>
                 <FormControl>
-                  <ImageUpload
+                  <MultipleImageUpload
                     onImageUpload={(data) => field.onChange(data)}
-                    initialImageUrls={initialData?.imageUrl} // Pass existing image URL
+                    initialImageUrls={initialData?.imageUrl}
                   />
                 </FormControl>
                 <FormMessage />

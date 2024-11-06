@@ -100,6 +100,7 @@ export const CodeSchema = z.object({
   title: z.string().min(1, { message: "Title is required" }),
   description: z.string().min(1, { message: "Description is required" }),
   correctOutput: z.string().min(1, { message: "Correct output is required" }),
+  imageUrl: z.string().min(1, { message: "Thumbnail is required" }),
 });
 
 export const UpdateStudentSchema = z.object({

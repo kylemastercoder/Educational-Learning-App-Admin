@@ -26,7 +26,7 @@ export const createCode = async (values: z.infer<typeof CodeSchema>) => {
     return { status: 400, message: `Validation Error: ${errors.join(", ")}` };
   }
 
-  const { title, description, correctOutput } = validatedField.data;
+  const { title, description, correctOutput, imageUrl } = validatedField.data;
 
   try {
     const courseRef = doc(collection(db, "CodeChallenges"));
@@ -35,6 +35,7 @@ export const createCode = async (values: z.infer<typeof CodeSchema>) => {
       description: description,
       correctOutput: correctOutput,
       userId: clerkId,
+      thumbnail: imageUrl,
       createdAt: new Date().toISOString(),
     });
 
@@ -126,7 +127,7 @@ export const updateCode = async (
     return { status: 400, message: `Validation Error: ${errors.join(", ")}` };
   }
 
-  const { title, description, correctOutput } = validatedField.data;
+  const { title, description, correctOutput, imageUrl } = validatedField.data;
 
   try {
     const courseRef = doc(db, "CodeChallenges", codeId);
@@ -135,6 +136,7 @@ export const updateCode = async (
       description: description,
       correctOutput: correctOutput,
       userId: clerkId,
+      thumbnail: imageUrl,
       updatedAt: new Date().toISOString(),
     });
 

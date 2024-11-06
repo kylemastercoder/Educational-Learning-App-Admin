@@ -8,27 +8,27 @@ import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { storage } from "@/lib/db";
 import { toast } from "sonner";
 
-const MultipleImageUpload = ({
+const ImageUpload = ({
   onImageUpload,
-  initialImageUrls = [],
+  initialImageUrl = "",
 }: {
-  onImageUpload: (urls: string[]) => void;
-  initialImageUrls?: string[];
+  onImageUpload: (url: string) => void;
+  initialImageUrl?: string;
 }) => {
-  const [selectedImages, setSelectedImages] = useState<File[]>([]);
-  const [uploadedImageUrls, setUploadedImageUrls] =
-    useState<string[]>(initialImageUrls);
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [uploadedImageUrl, setUploadedImageUrl] =
+    useState<string>(initialImageUrl);
   const [uploading, setUploading] = useState(false);
-  const [progress, setProgress] = useState<number[]>([]);
+  const [progress, setProgress] = useState<number>(0);
 
-  // Use effect to set the initial image URLs if available
+  // Use effect to set the initial image URL if available
   useEffect(() => {
-    if (initialImageUrls.length) {
-      setUploadedImageUrls(initialImageUrls); // Set existing image URLs
+    if (initialImageUrl) {
+      setUploadedImageUrl(initialImageUrl);
     }
-  }, [initialImageUrls]);
+  }, [initialImageUrl]);
 
-  const uploadImageToFirebase = async (file: File, index: number) => {
+  const uploadImageToFirebase = async (file: File) => {
     return new Promise<string>((resolve, reject) => {
       const storageRef = ref(storage, `courses/${file.name}`);
       const uploadTask = uploadBytesResumable(storageRef, file);
@@ -38,16 +38,9 @@ const MultipleImageUpload = ({
         (snapshot) => {
           const progressPercent =
             (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          setProgress((prev) => {
-            const updatedProgress = [...prev];
-            updatedProgress[index] = Math.round(progressPercent);
-            return updatedProgress;
-          });
+          setProgress(Math.round(progressPercent));
           toast.loading(
-            `Uploading ${file.name}: ${Math.round(progressPercent)}%`,
-            {
-              id: `uploadProgress-${index}`,
-            }
+            `Uploading ${file.name}: ${Math.round(progressPercent)}%`
           );
         },
         (error) => {
@@ -56,9 +49,7 @@ const MultipleImageUpload = ({
         },
         () => {
           getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-            toast.success(`${file.name} uploaded successfully!`, {
-              id: `uploadProgress-${index}`,
-            });
+            toast.success(`${file.name} uploaded successfully!`);
             resolve(downloadURL);
           });
         }
@@ -68,26 +59,23 @@ const MultipleImageUpload = ({
 
   const onDrop = useCallback(
     async (acceptedFiles: File[]) => {
-      setSelectedImages(acceptedFiles);
+      const file = acceptedFiles[0];
+      setSelectedImage(file);
       setUploading(true);
-      setProgress(Array(acceptedFiles.length).fill(0));
+      setProgress(0);
 
-      const urls: string[] = [];
       try {
-        for (let i = 0; i < acceptedFiles.length; i++) {
-          const imageUrl = await uploadImageToFirebase(acceptedFiles[i], i);
-          urls.push(imageUrl);
-        }
-        setUploadedImageUrls((prev) => [...prev, ...urls]);
-        onImageUpload([...uploadedImageUrls, ...urls]);
+        const imageUrl = await uploadImageToFirebase(file);
+        setUploadedImageUrl(imageUrl);
+        onImageUpload(imageUrl);
       } catch (error) {
-        console.error("Error uploading images:", error);
-        toast.error(`Error uploading images: ${error}`);
+        console.error("Error uploading image:", error);
+        toast.error(`Error uploading image: ${error}`);
       }
       setUploading(false);
       toast.dismiss();
     },
-    [onImageUpload, uploadedImageUrls]
+    [onImageUpload]
   );
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -95,15 +83,13 @@ const MultipleImageUpload = ({
     accept: {
       "image/*": [],
     },
-    multiple: true,
+    multiple: false, // Limit to one file
   });
 
-  const removeImage = (index: number) => {
-    const updatedUrls = [...uploadedImageUrls];
-    updatedUrls.splice(index, 1);
-    setUploadedImageUrls(updatedUrls);
-    onImageUpload(updatedUrls);
-    setProgress([]);
+  const removeImage = () => {
+    setUploadedImageUrl("");
+    onImageUpload("");
+    setProgress(0);
   };
 
   return (
@@ -116,42 +102,38 @@ const MultipleImageUpload = ({
       >
         <input {...getInputProps()} />
         <Inbox className="w-10 h-10" />
-        <p>Drag & drop images, or click to select files</p>
+        <p>Drag & drop an image, or click to select a file</p>
       </div>
 
-      {uploadedImageUrls.length > 0 && (
-        <div className="grid grid-cols-2 gap-4 mt-4">
-          {uploadedImageUrls.map((url, index) => (
-            <div key={index} className="relative">
-              <Image
-                src={url}
-                alt={`Uploaded image ${index + 1}`}
-                width={200}
-                height={200}
-                className="rounded-md"
-              />
-              <Button
-                onClick={() => removeImage(index)}
-                variant="outline"
-                className="absolute bg-themeBlack border-themeGray text-themeTextGray hover:bg-themeGray top-2 right-2"
-              >
-                Remove
-              </Button>
-              {uploading && progress[index] !== undefined && (
-                <div className="w-full bg-gray-200 rounded-full h-2.5 mt-4">
-                  <div
-                    className="bg-themeGray h-2.5 rounded-full"
-                    style={{ width: `${progress[index]}%` }}
-                  ></div>
-                  <p className="text-center text-sm mt-2">{progress[index]}%</p>
-                </div>
-              )}
+      {uploadedImageUrl && (
+        <div className="relative mt-4">
+          <Image
+            src={uploadedImageUrl}
+            alt="Uploaded image"
+            width={200}
+            height={200}
+            className="rounded-md"
+          />
+          <Button
+            onClick={removeImage}
+            variant="outline"
+            className="absolute bg-themeBlack border-themeGray text-themeTextGray hover:bg-themeGray top-2 right-2"
+          >
+            Remove
+          </Button>
+          {uploading && (
+            <div className="w-full bg-gray-200 rounded-full h-2.5 mt-4">
+              <div
+                className="bg-themeGray h-2.5 rounded-full"
+                style={{ width: `${progress}%` }}
+              ></div>
+              <p className="text-center text-sm mt-2">{progress}%</p>
             </div>
-          ))}
+          )}
         </div>
       )}
     </div>
   );
 };
 
-export default MultipleImageUpload;
+export default ImageUpload;

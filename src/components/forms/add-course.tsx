@@ -133,14 +133,13 @@ const CreateCourse = ({ initialData }: { initialData?: any }) => {
                 <FormControl>
                   <ImageUpload
                     onImageUpload={(data) => field.onChange(data)}
-                    initialImageUrls={initialData?.imagesUrl} // Pass existing image URL
+                    initialImageUrl={initialData?.imageUrl}
                   />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
-
           {!initialData && (
             <Link
               className="text-sm text-themeTextGray hover:underline"

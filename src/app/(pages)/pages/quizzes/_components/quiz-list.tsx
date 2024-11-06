@@ -5,7 +5,6 @@ import { Loader2, Edit, EllipsisVertical, Trash } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { deleteQuiz, getQuizzes } from "@/actions/quiz";
-import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import {
   DropdownMenu,
@@ -41,9 +40,6 @@ const QuizList = () => {
 
     fetchQuizzes();
   }, []);
-
-  const thumbnailUrl =
-    "https://picsum.photos/800/600?random=" + Math.floor(Math.random() * 1000);
 
   if (loading)
     return (
@@ -95,13 +91,8 @@ const QuizList = () => {
       <div key={quiz.id}>
         <Card className="bg-transparent border-themeGray h-full rounded-xl overflow-hidden">
           {/* Video Player */}
-          <div className="">
-            <Image
-              src={thumbnailUrl}
-              alt="Quiz Thumbnail"
-              width={800}
-              height={600}
-            />
+          <div className="h-[300px] w-[600px] bg-zinc-800">
+           
           </div>
           <div className="flex flex-col justify-center px-5 mt-3">
             <div className="flex justify-between items-center">

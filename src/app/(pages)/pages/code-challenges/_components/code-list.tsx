@@ -43,9 +43,6 @@ const CodeList = () => {
     fetchCodes();
   }, []);
 
-  const thumbnailUrl =
-    "https://picsum.photos/800/600?random=" + Math.floor(Math.random() * 1000);
-
   if (loading)
     return (
       <div className="flex items-center m-auto mt-20">
@@ -98,7 +95,7 @@ const CodeList = () => {
           {/* Video Player */}
           <div className="">
             <Image
-              src={thumbnailUrl}
+              src={code.thumbnail}
               alt="Code Challenge Thumbnail"
               width={800}
               height={600}
