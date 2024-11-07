@@ -53,7 +53,7 @@ export const CreateCourseModule = ({ courseId }: CreateCourseModuleProps) => {
     fetchModules();
   }, [courseId]);
 
-  // const BASE_URL = `http://localhost:3000/pages/courses/${courseId}`;
+  const BASE_URL = `https://educational-learning-app-admin.vercel.app/pages/courses/${courseId}`;
 
   return (
     <div className="flex flex-col">
@@ -83,7 +83,7 @@ export const CreateCourseModule = ({ courseId }: CreateCourseModuleProps) => {
       {sortedModules.map((module) => (
         <Link
           key={module.id}
-          href={`pages/courses/${courseId}/modules/${module.id}`}
+          href={`${BASE_URL}/modules/${module.id}`}
           className={cn(
             "flex items-center mt-3 bg-themeBlack hover:bg-themeDarkGray justify-center py-2 rounded-md",
             // Apply a different background if the current path matches the module
