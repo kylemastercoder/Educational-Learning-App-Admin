@@ -80,6 +80,18 @@ const QuizList = () => {
     }
   };
 
+  const generateRandomColor = () => {
+    const colors = [
+      "bg-green-700",
+      "bg-red-700",
+      "bg-blue-700",
+      "bg-pink-700",
+      "bg-yellow-700",
+      "bg-amber-700",
+    ];
+    return colors[Math.floor(Math.random() * colors.length)];
+  }
+
   return quizzes.map((quiz) => (
     <>
       <AlertModal
@@ -91,7 +103,7 @@ const QuizList = () => {
       <div key={quiz.id}>
         <Card className="bg-transparent border-themeGray h-full rounded-xl overflow-hidden">
           {/* Video Player */}
-          <div className="h-[300px] w-[600px] bg-zinc-800">
+          <div className={`h-[300px] w-[600px] ${generateRandomColor()}`}>
            
           </div>
           <div className="flex flex-col justify-center px-5 mt-3">

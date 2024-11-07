@@ -85,7 +85,7 @@ const CreateVideo = ({ initialData }: { initialData?: any }) => {
 
   return (
     <Form {...form}>
-      <form className="mt-5" onSubmit={form.handleSubmit(onSubmit)}>
+      <form className="mt-5 max-h-[600px] overflow-y-auto" onSubmit={form.handleSubmit(onSubmit)}>
         <div className="">
           <FormField
             control={form.control}
