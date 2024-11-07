@@ -15,7 +15,7 @@ const CallToAction = () => {
       <p className="text-sm md:text-center text-left text-muted-foreground">
         Discover a dynamic learning environment designed to immerse you in the world of C programming.
         <br className="md:hidden" />
-        Whether you're a beginner or an experienced coder, <br className="hidden md:block" /> C-Challenge offers a wealth of resources and
+        Whether you&apos;re a beginner or an experienced coder, <br className="hidden md:block" /> C-Challenge offers a wealth of resources and
         interactive experiences to elevate your skills.
       </p>
       <div className="flex md:flex-row flex-col md:justify-center gap-5 md:mt-5 w-full">
