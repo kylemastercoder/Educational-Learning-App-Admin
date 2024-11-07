@@ -17,7 +17,7 @@ const MobileNav = async () => {
       <Link href={`/pages/messages`}>
         <Message className="h-7 w-7" />
       </Link>
-      <UserAvatar image={user.image as string} />
+      <UserAvatar username={user.username} image={user.image as string} />
     </div>
   )
 }
