@@ -83,7 +83,7 @@ export const CreateCourseModule = ({ courseId }: CreateCourseModuleProps) => {
       {sortedModules.map((module) => (
         <Link
           key={module.id}
-          href={`/modules/${module.id}`}
+          href={`pages/courses/${courseId}/modules/${module.id}`}
           className={cn(
             "flex items-center mt-3 bg-themeBlack hover:bg-themeDarkGray justify-center py-2 rounded-md",
             // Apply a different background if the current path matches the module
