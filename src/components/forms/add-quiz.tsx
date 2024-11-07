@@ -19,7 +19,7 @@ import {
 import { Label } from "../ui/label";
 import { createQuiz, updateQuiz } from "@/actions/quiz";
 
-const CreateQuiz = ({ initialData }: { initialData: any }) => {
+const CreateQuiz = ({ initialData }: { initialData?: any }) => {
   const [isPending, setIsPending] = useState(false);
   const [howManyQuiz, setHowManyQuiz] = useState("1");
   const [type, setType] = useState("multipleChoice");
