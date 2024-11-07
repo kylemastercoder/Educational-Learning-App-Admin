@@ -23,7 +23,7 @@ import RichTextEditor from "../global/rich-text-editor";
 import { createCode, updateCode } from "@/actions/code";
 import ImageUpload from "../global/image-upload";
 
-const CreateCode = ({ initialData }: { initialData: any }) => {
+const CreateCode = ({ initialData }: { initialData?: any }) => {
   const [isPending, setIsPending] = useState(false);
   const router = useRouter();
   const form = useForm<z.infer<typeof CodeSchema>>({
