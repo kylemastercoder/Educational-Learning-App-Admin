@@ -98,7 +98,7 @@ export const CreateCourseModule = ({ courseId }: CreateCourseModuleProps) => {
     }
   };
 
-  const BASE_URL = `http://localhost:3000/pages/courses/${courseId}`;
+  const BASE_URL = `https://educational-learning-app-admin.vercel.app/pages/courses/${courseId}`;
 
   return (
     <div className="flex flex-col">
