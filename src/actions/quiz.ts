@@ -2,7 +2,7 @@
 
 import { db } from "@/lib/db";
 import { currentUser } from "@clerk/nextjs/server";
-import { collection, deleteDoc, doc, getDocs, query, setDoc } from "firebase/firestore";
+import { collection, deleteDoc, doc, getDocs, query, setDoc, updateDoc, where } from "firebase/firestore";
 
 interface Question {
   question: string;
@@ -31,6 +31,7 @@ export const createQuiz = async (values: QuizValues) => {
       difficulties: values.difficulties,
       type: values.type,
       questions: values.questions,
+      isArchive: false,
       createdAt: new Date().toISOString(),
     });
 
@@ -51,8 +52,11 @@ export const getQuizzes = async () => {
   if (!user) return { status: 404, message: "Unauthenticated!" };
 
   try {
-    const q = query(collection(db, "Quizzes"));
-    const querySnapshot = await getDocs(q);
+    const quizQuery = query(
+      collection(db, "Quizzes"),
+      where("isArchive", "==", false)
+    );
+    const querySnapshot = await getDocs(quizQuery);
 
     if (!querySnapshot.empty) {
       const quizzesDocs = querySnapshot.docs.map((doc) => ({
@@ -63,6 +67,45 @@ export const getQuizzes = async () => {
       return {
         status: 200,
         quizzes: quizzesDocs,
+      };
+    }
+
+    return {
+      status: 404,
+      message: "No quizzes found",
+    };
+  } catch (error) {
+    console.error("Error fetching quizzes:", error);
+    return {
+      status: 400,
+      message: "Failed to fetch quizzes",
+    };
+  }
+};
+
+export const getArchivedQuizzes = async () => {
+  try {
+    // Modify the query to include the where clause to filter by isArchive
+    const quizQuery = query(
+      collection(db, "Quizzes"),
+      where("isArchive", "==", true)
+    );
+    const quizSnapshot = await getDocs(quizQuery);
+
+    if (!quizSnapshot.empty) {
+      const quizDocs = await Promise.all(
+        quizSnapshot.docs.map(async (doc) => {
+          const quizData = doc.data();
+          return {
+            id: doc.id,
+            ...quizData,
+          };
+        })
+      );
+
+      return {
+        status: 200,
+        quizzes: quizDocs,
       };
     }
 
@@ -133,6 +176,62 @@ export const updateQuiz = async (
     return {
       status: 400,
       message: "Oops! something went wrong. Try again",
+    };
+  }
+};
+
+export const archiveQuiz = async (quizId: string) => {
+  const user = await currentUser();
+
+  if (!user) return { status: 404, message: "Unauthenticated!" };
+
+  if (!quizId) return { status: 400, message: "Quiz ID is required" };
+
+  try {
+    // Reference to the course document
+    const courseRef = doc(db, "Quizzes", quizId);
+
+    await updateDoc(courseRef, {
+      isArchive: true,
+    });
+
+    return {
+      status: 200,
+      message: "Course archived successfully",
+    };
+  } catch (error) {
+    console.error("Error archiving course: ", error);
+    return {
+      status: 400,
+      message: "Oops! Something went wrong. Try again",
+    };
+  }
+};
+
+export const retrieveQuiz = async (quizId: string) => {
+  const user = await currentUser();
+
+  if (!user) return { status: 404, message: "Unauthenticated!" };
+
+  if (!quizId) return { status: 400, message: "Quiz ID is required" };
+
+  try {
+    // Reference to the Quiz document
+    const quizRef = doc(db, "Quizzes", quizId);
+
+    await updateDoc(quizRef, {
+      isArchive: false,
+    });
+
+    return {
+      status: 200,
+      message: "Quiz retrieved successfully",
+    };
+  } catch (error) {
+    console.error("Error retrieving quiz: ", error);
+    return {
+      status: 400,
+      message: "Oops! Something went wrong. Try again",
     };
   }
 };

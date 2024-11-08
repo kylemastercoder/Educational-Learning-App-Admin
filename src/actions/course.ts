@@ -8,6 +8,8 @@ import {
   deleteDoc,
   doc,
   getDocs,
+  limit,
+  orderBy,
   query,
   setDoc,
   updateDoc,
@@ -436,6 +438,64 @@ export const getViewedCourses = async (studentId: string) => {
     return {
       status: 400,
       message: "Failed to fetch courses",
+    };
+  }
+};
+
+export const fetchMaxTopicNumber = async (
+  courseId: string
+): Promise<number> => {
+  try {
+    const topicsRef = collection(db, "Modules");
+    const maxNumberQuery = query(
+      topicsRef,
+      where("courseId", "==", courseId),
+      orderBy("moduleNumber", "desc"),
+      limit(1)
+    );
+
+    console.log("Fetching max module number for courseId:", courseId); // Debug courseId
+
+    const querySnapshot = await getDocs(maxNumberQuery);
+    console.log("Number of documents fetched:", querySnapshot.size); // Check document count
+
+    if (!querySnapshot.empty) {
+      const maxNumberDoc = querySnapshot.docs[0];
+      console.log("Max module number found:", maxNumberDoc.data().moduleNumber);
+      return maxNumberDoc.data().moduleNumber;
+    }
+    return 0;
+  } catch (error) {
+    console.error("Error fetching max topic number:", error);
+    return 0;
+  }
+};
+
+export const updateModuleOrder = async (
+  moduleNumber: number,
+  moduleId: string
+) => {
+  try {
+    const moduleRef = doc(db, "Modules", moduleId); // Reference to the module document
+    await setDoc(
+      moduleRef,
+      {
+        moduleNumber: moduleNumber, // Update the moduleNumber
+      },
+      { merge: true }
+    ); // Merge to only update the moduleNumber field
+
+    console.log(
+      `Module ${moduleId} updated with new module number: ${moduleNumber}`
+    );
+    return {
+      status: 200,
+    };
+  } catch (error) {
+    console.error("Error updating module order: ", error);
+    return {
+      status: 400,
+      message: "Oops! something went wrong. Try again.",
     };
   }
 };

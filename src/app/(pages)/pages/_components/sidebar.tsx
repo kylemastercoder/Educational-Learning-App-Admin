@@ -50,7 +50,7 @@ const Sidebar = ({ mobile }: Props) => {
                 : "text-themeTextGray"
             }`}
           />
-          Accounts
+          Student Accounts
         </Link>
         <Link
           className={`flex text-sm gap-x-2 items-center font-semibold rounded-xl hover:bg-themeGray p-2 ${

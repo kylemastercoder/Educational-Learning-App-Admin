@@ -2,16 +2,14 @@
 "use client";
 import { Card } from "@/components/ui/card";
 import {
-  Loader2,
   Edit,
   EllipsisVertical,
+  Loader2,
+  RotateCcw,
   Trash,
-  ArchiveRestore,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { archiveQuiz, deleteQuiz, getQuizzes } from "@/actions/quiz";
-import { Badge } from "@/components/ui/badge";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -21,11 +19,13 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Modal } from "@/components/ui/modal";
-import CreateQuiz from "@/components/forms/add-quiz";
 import AlertModal from "@/components/ui/alert-modal";
 import ArchiveModal from "@/components/ui/archive-modal";
+import { deleteQuiz, getArchivedQuizzes, retrieveQuiz } from "@/actions/quiz";
+import { Badge } from "@/components/ui/badge";
+import CreateQuiz from "@/components/forms/add-quiz";
 
-const QuizList = () => {
+const ArchivedQuizList = () => {
   const [quizzes, setQuizzes] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [editModal, setEditModal] = useState(false);
@@ -35,13 +35,13 @@ const QuizList = () => {
   useEffect(() => {
     const fetchQuizzes = async () => {
       setLoading(true);
-      const { status, quizzes, message } = await getQuizzes();
+      const { status, quizzes, message } = await getArchivedQuizzes();
       if (status === 200) {
         if (quizzes) {
           setQuizzes(quizzes);
         }
       } else {
-        toast.error(message || "Failed to load quizzes.");
+        toast.error(message || "Failed to load archived quizzes.");
       }
       setLoading(false);
     };
@@ -56,18 +56,18 @@ const QuizList = () => {
       </div>
     );
 
-  if (editModal) {
-    return (
-      <Modal
-        isOpen={editModal}
-        onClose={() => setEditModal(false)}
-        title="Update Quizzes"
-        description="Update your quizzes for your community"
-      >
-        <CreateQuiz initialData={selectedQuiz} />
-      </Modal>
-    );
-  }
+    if (editModal) {
+      return (
+        <Modal
+          isOpen={editModal}
+          onClose={() => setEditModal(false)}
+          title="Update Quizzes"
+          description="Update your quizzes for your community"
+        >
+          <CreateQuiz initialData={selectedQuiz} />
+        </Modal>
+      );
+    }
 
   const onDelete = async () => {
     setLoading(true);
@@ -88,6 +88,35 @@ const QuizList = () => {
     }
   };
 
+  const onArchive = async () => {
+    setLoading(true);
+    try {
+      const response = await retrieveQuiz(selectedQuiz.id);
+      if (response.status === 200) {
+        setArchiveModal(false);
+        toast.success(response.message);
+        window.location.reload();
+      } else {
+        toast.error(response.message || "Failed to retrieve quiz");
+      }
+    } catch (error) {
+      console.error("Error retrieving quiz:", error);
+      toast.error("Failed to retrieve quiz");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (!quizzes.length) {
+    return (
+      <div className="flex items-center">
+        <p className="text-lg text-themeTextGray">
+          No archived quizzes available
+        </p>
+      </div>
+    );
+  }
+
   const generateRandomColor = () => {
     const colors = [
       "bg-green-700",
@@ -98,25 +127,6 @@ const QuizList = () => {
       "bg-amber-700",
     ];
     return colors[Math.floor(Math.random() * colors.length)];
-  };
-
-  const onArchive = async () => {
-    setLoading(true);
-    try {
-      const response = await archiveQuiz(selectedQuiz.id);
-      if (response.status === 200) {
-        setArchiveModal(false);
-        toast.success(response.message);
-        window.location.reload();
-      } else {
-        toast.error(response.message || "Failed to archive quiz");
-      }
-    } catch (error) {
-      console.error("Error archiving quiz:", error);
-      toast.error("Failed to archive quiz");
-    } finally {
-      setLoading(false);
-    }
   };
 
   return quizzes.map((quiz) => (
@@ -173,8 +183,8 @@ const QuizList = () => {
                       setArchiveModal(true);
                     }}
                   >
-                    <ArchiveRestore className="w-4 h-4 mr-2" />
-                    Archive
+                    <RotateCcw className="w-4 h-4 mr-2" />
+                    Retrieve
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -208,4 +218,4 @@ const QuizList = () => {
   ));
 };
 
-export default QuizList;
+export default ArchivedQuizList;

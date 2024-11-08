@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Form,
   FormControl,
@@ -17,7 +17,11 @@ import { Input } from "../ui/input";
 import { ModuleSchema } from "@/constants/schema";
 import { Button } from "../ui/button";
 import { Loader } from "../global/loader";
-import { createModule, updateModule } from "@/actions/course";
+import {
+  createModule,
+  fetchMaxTopicNumber,
+  updateModule,
+} from "@/actions/course";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import RichTextEditor from "../global/rich-text-editor";
@@ -33,24 +37,60 @@ const AddModule = ({
   moduleId?: string;
 }) => {
   const [isPending, setIsPending] = useState(false);
+  const [nextTopicNumber, setNextTopicNumber] = useState(1);
   const router = useRouter();
+
   const form = useForm<z.infer<typeof ModuleSchema>>({
     resolver: zodResolver(ModuleSchema),
     mode: "onChange",
     defaultValues: initialData
       ? {
           ...initialData,
-          number: initialData?.moduleNumber || 0,
+          number: initialData?.moduleNumber || nextTopicNumber,
           name: initialData?.name || "",
           content: initialData?.content || "",
         }
       : {
-          number: 0,
+          number: nextTopicNumber,
           name: "",
           content: "",
           imagesUrl: [],
         },
   });
+
+  useEffect(() => {
+    const getNextTopicNumber = async () => {
+      if (!courseId) {
+        console.warn(
+          "courseId is undefined. Skipping fetch for max topic number."
+        );
+        setNextTopicNumber(1);
+        return;
+      }
+
+      try {
+        const maxNumber = await fetchMaxTopicNumber(courseId);
+        console.log("Max module number fetched:", maxNumber);
+        setNextTopicNumber(maxNumber + 1);
+      } catch (error) {
+        console.error("Failed to fetch max topic number:", error);
+        setNextTopicNumber(1);
+      }
+    };
+
+    getNextTopicNumber();
+  }, [courseId]);
+
+  useEffect(() => {
+    if (!initialData) {
+      form.reset({
+        number: nextTopicNumber,
+        name: "",
+        content: "",
+        imagesUrl: [],
+      });
+    }
+  }, [nextTopicNumber, initialData, form]);
 
   const onSubmit = async (values: z.infer<typeof ModuleSchema>) => {
     try {
@@ -97,7 +137,7 @@ const AddModule = ({
           <FormField
             control={form.control}
             name="number"
-            disabled={isPending}
+            disabled
             render={({ field }) => (
               <FormItem className="mb-3">
                 <FormLabel className="flex flex-col gap-2">
@@ -146,6 +186,7 @@ const AddModule = ({
                 </FormLabel>
                 <FormControl>
                   <RichTextEditor
+                    className="h-[300px]"
                     description={field.value}
                     onChange={field.onChange}
                   />

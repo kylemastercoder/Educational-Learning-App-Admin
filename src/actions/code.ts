@@ -10,6 +10,8 @@ import {
   getDocs,
   query,
   setDoc,
+  updateDoc,
+  where,
 } from "firebase/firestore";
 import { z } from "zod";
 
@@ -35,6 +37,7 @@ export const createCode = async (values: z.infer<typeof CodeSchema>) => {
       description: description,
       correctOutput: correctOutput,
       userId: clerkId,
+      isArchive: false,
       thumbnail: imageUrl,
       createdAt: new Date().toISOString(),
     });
@@ -56,7 +59,10 @@ export const getCodes = async () => {
   if (!user) return { status: 404, message: "Unauthenticated!" };
 
   try {
-    const q = query(collection(db, "CodeChallenges"));
+    const q = query(
+      collection(db, "CodeChallenges"),
+      where("isArchive", "==", false)
+    );
     const querySnapshot = await getDocs(q);
 
     if (!querySnapshot.empty) {
@@ -68,6 +74,45 @@ export const getCodes = async () => {
       return {
         status: 200,
         codes: codeDocs,
+      };
+    }
+
+    return {
+      status: 404,
+      message: "No code challenges found",
+    };
+  } catch (error) {
+    console.error("Error fetching code challenges:", error);
+    return {
+      status: 400,
+      message: "Failed to fetch code challenges",
+    };
+  }
+};
+
+export const getArchivedCode = async () => {
+  try {
+    // Modify the query to include the where clause to filter by isArchive
+    const quizQuery = query(
+      collection(db, "CodeChallenges"),
+      where("isArchive", "==", true)
+    );
+    const quizSnapshot = await getDocs(quizQuery);
+
+    if (!quizSnapshot.empty) {
+      const quizDocs = await Promise.all(
+        quizSnapshot.docs.map(async (doc) => {
+          const quizData = doc.data();
+          return {
+            id: doc.id,
+            ...quizData,
+          };
+        })
+      );
+
+      return {
+        status: 200,
+        codes: quizDocs,
       };
     }
 
@@ -147,6 +192,62 @@ export const updateCode = async (
     return {
       status: 400,
       message: "Oops! something went wrong. Try again",
+    };
+  }
+};
+
+export const archiveCode = async (codeId: string) => {
+  const user = await currentUser();
+
+  if (!user) return { status: 404, message: "Unauthenticated!" };
+
+  if (!codeId) return { status: 400, message: "Code ID is required" };
+
+  try {
+    // Reference to the course document
+    const courseRef = doc(db, "CodeChallenges", codeId);
+
+    await updateDoc(courseRef, {
+      isArchive: true,
+    });
+
+    return {
+      status: 200,
+      message: "Code archived successfully",
+    };
+  } catch (error) {
+    console.error("Error archiving code: ", error);
+    return {
+      status: 400,
+      message: "Oops! Something went wrong. Try again",
+    };
+  }
+};
+
+export const retrieveCode = async (codeId: string) => {
+  const user = await currentUser();
+
+  if (!user) return { status: 404, message: "Unauthenticated!" };
+
+  if (!codeId) return { status: 400, message: "Code ID is required" };
+
+  try {
+    // Reference to the Quiz document
+    const quizRef = doc(db, "CodeChallenges", codeId);
+
+    await updateDoc(quizRef, {
+      isArchive: false,
+    });
+
+    return {
+      status: 200,
+      message: "Code retrieved successfully",
+    };
+  } catch (error) {
+    console.error("Error retrieving code: ", error);
+    return {
+      status: 400,
+      message: "Oops! Something went wrong. Try again",
     };
   }
 };

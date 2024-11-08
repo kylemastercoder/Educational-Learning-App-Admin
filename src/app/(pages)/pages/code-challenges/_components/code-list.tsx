@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { Card } from "@/components/ui/card";
-import { Loader2, Edit, EllipsisVertical, Trash } from "lucide-react";
+import { Loader2, Edit, EllipsisVertical, Trash, ArchiveRestore } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import Image from "next/image";
-import { deleteCode, getCodes } from "@/actions/code";
+import { archiveCode, deleteCode, getCodes } from "@/actions/code";
 import parse from "html-react-parser";
 import { truncateString } from "@/lib/utils";
 import {
@@ -19,6 +19,7 @@ import {
 import { Modal } from "@/components/ui/modal";
 import CreateCode from "@/components/forms/add-code";
 import AlertModal from "@/components/ui/alert-modal";
+import ArchiveModal from "@/components/ui/archive-modal";
 
 const CodeList = () => {
   const [codes, setCodes] = useState<any[]>([]);
@@ -26,6 +27,7 @@ const CodeList = () => {
   const [editModal, setEditModal] = useState(false);
   const [deleteModal, setDeleteModal] = useState(false);
   const [selectedCode, setSelectedCode] = useState<any>(null);
+  const [archiveModal, setArchiveModal] = useState(false);
   useEffect(() => {
     const fetchCodes = async () => {
       setLoading(true);
@@ -82,6 +84,25 @@ const CodeList = () => {
     }
   };
 
+  const onArchive = async () => {
+    setLoading(true);
+    try {
+      const response = await archiveCode(selectedCode.id);
+      if (response.status === 200) {
+        setArchiveModal(false);
+        toast.success(response.message);
+        window.location.reload();
+      } else {
+        toast.error(response.message || "Failed to archive code challenges");
+      }
+    } catch (error) {
+      console.error("Error archiving code challenges:", error);
+      toast.error("Failed to archive code challenges");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return codes.map((code) => (
     <>
      <AlertModal
@@ -90,19 +111,24 @@ const CodeList = () => {
         onClose={() => setDeleteModal(false)}
         onConfirm={onDelete}
       />
+      <ArchiveModal
+        isOpen={archiveModal}
+        loading={loading}
+        onClose={() => setArchiveModal(false)}
+        onConfirm={onArchive}
+      />
       <div key={code.id}>
         <Card className="bg-transparent border-themeGray h-full rounded-xl overflow-hidden">
-          {/* Video Player */}
           <div className="">
             <Image
               src={code.thumbnail}
               alt="Code Challenge Thumbnail"
-              width={800}
-              height={600}
+              width={700}
+              height={400}
             />
           </div>
-          <div className="flex flex-col justify-center px-5 mt-3">
-            <div className="flex justify-between items-center">
+          <div className="flex flex-col justify-center px-5 py-2">
+            <div className="flex justify-between items-center pb-3">
               <h2 className="text-lg text-white font-semibold">{code.title}</h2>
               <DropdownMenu>
                 <DropdownMenuTrigger>
@@ -128,6 +154,15 @@ const CodeList = () => {
                   >
                     <Trash className="w-4 h-4 mr-2" />
                     Delete
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={() => {
+                      setSelectedCode(code);
+                      setArchiveModal(true);
+                    }}
+                  >
+                    <ArchiveRestore className="w-4 h-4 mr-2" />
+                    Archive
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>

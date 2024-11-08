@@ -7,9 +7,11 @@ import Heading from "@tiptap/extension-heading";
 const RichTextEditor = ({
   description,
   onChange,
+  className
 }: {
   description: string;
   onChange: (richText: string) => void;
+  className?: string;
 }) => {
   const editor = useEditor({
     extensions: [
@@ -25,7 +27,7 @@ const RichTextEditor = ({
     editorProps: {
       attributes: {
         class:
-          "rounded-md bg-themeBlack border-themeGray text-themeTextGray border h-[100px] overflow-auto border-input bg-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 px-3 py-1 text-sm shadow-sm",
+          `rounded-md bg-themeBlack border-themeGray text-themeTextGray border h-[100px] ${className} overflow-auto border-input bg-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 px-3 py-1 text-sm shadow-sm`,
       },
     },
     onUpdate({ editor }) {

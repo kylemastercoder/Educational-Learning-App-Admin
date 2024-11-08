@@ -62,6 +62,93 @@ export const getStudents = async () => {
   }
 };
 
+export const getStudentsWithQuizScore = async () => {
+  const user = await currentUser();
+
+  if (!user) return { status: 404, message: "Unauthenticated!" };
+
+  try {
+    // Fetch students from the "Users" collection
+    const studentsQuery = query(collection(db, "Users"));
+    const studentsSnapshot = await getDocs(studentsQuery);
+
+    if (!studentsSnapshot.empty) {
+      const students = studentsSnapshot.docs.map((doc) => {
+        const data = doc.data();
+        return {
+          id: data.clerkId,
+          name: data.name || "Unknown Name",
+          email: data.email || "Unknown Email",
+          profile: data.profile || "",
+          studentNumber: data.studentNo || "Unknown Student Number",
+        };
+      });
+
+      // Fetch quiz scores from the "QuizScore" collection
+      const quizScoresQuery = query(collection(db, "QuizScore"));
+      const quizScoresSnapshot = await getDocs(quizScoresQuery);
+
+      if (!quizScoresSnapshot.empty) {
+        const quizScores = quizScoresSnapshot.docs.map((doc) => {
+          const data = doc.data();
+          console.log("QuizScore Document:", data); // Log quiz scores for debugging
+          return {
+            studentId: data.userId, // Assuming `studentId` links quiz score to student
+            quizId: data.quizId,
+            quizScore: `${data.score}/${data.howManyQuiz}`, // Format the score as "score/total"
+          };
+        });
+
+        // Combine students with their quiz scores
+        const studentsWithScores = students.map((student) => {
+          // Get the quiz scores for this student
+          const studentQuizScores = quizScores.filter(
+            (quiz) => quiz.studentId === student.id
+          );
+
+          // Log student quiz scores for debugging
+          console.log(`Quiz Scores for ${student.name}:`, studentQuizScores);
+
+          // Organize quiz scores by quizId for each student
+          const quizScoresByQuizId = studentQuizScores.reduce(
+            (acc: { [key: string]: string }, quiz) => {
+              acc[quiz.quizId] = quiz.quizScore; // Map each quizId to its score
+              return acc;
+            },
+            {}
+          );
+
+          return {
+            ...student,
+            quizScores: quizScoresByQuizId, // Store the quiz scores mapped by quizId
+          };
+        });
+
+        return {
+          status: 200,
+          students: studentsWithScores,
+        };
+      } else {
+        return {
+          status: 404,
+          message: "No quiz scores found",
+        };
+      }
+    } else {
+      return {
+        status: 404,
+        message: "No students found",
+      };
+    }
+  } catch (error) {
+    console.error("Error fetching students with quiz scores:", error);
+    return {
+      status: 400,
+      message: "Failed to fetch students with quiz scores",
+    };
+  }
+};
+
 export const getStudentById = async (studentId: string) => {
   const user = await currentUser();
 
