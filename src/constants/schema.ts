@@ -41,7 +41,7 @@ export const CourseSchema = z.object({
 });
 
 export const ModuleSchema = z.object({
-  number: z.coerce.number().min(1, { message: "Topic number is required" }),
+  // number: z.coerce.number().min(1, { message: "Topic number is required" }),
   name: z.string().min(1, { message: "Topic name is required" }),
   content: z.string().min(1, { message: "Topic content is required" }),
   imagesUrl: z

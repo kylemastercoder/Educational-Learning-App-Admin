@@ -11,6 +11,7 @@ interface Question {
 }
 
 interface QuizValues {
+  quizTitle: string;
   howManyQuiz: string;
   type: string;
   difficulties: string;
@@ -27,6 +28,7 @@ export const createQuiz = async (values: QuizValues) => {
     const quizRef = doc(collection(db, "Quizzes"));
     await setDoc(quizRef, {
       userId: clerkId,
+      quizTitle: values.quizTitle,
       howManyQuiz: values.howManyQuiz,
       difficulties: values.difficulties,
       type: values.type,
@@ -149,10 +151,7 @@ export const deleteQuiz = async (quizId: string) => {
   }
 };
 
-export const updateQuiz = async (
-  values: QuizValues,
-  quizId: string
-) => {
+export const updateQuiz = async (values: QuizValues, quizId: string) => {
   const user = await currentUser();
 
   if (!user) return { status: 404, message: "Unauthenticated!" };
@@ -162,23 +161,30 @@ export const updateQuiz = async (
     const quizRef = doc(db, "Quizzes", quizId);
     await setDoc(quizRef, {
       userId: clerkId,
+      quizTitle: values.quizTitle,
       howManyQuiz: values.howManyQuiz,
       difficulties: values.difficulties,
       type: values.type,
       questions: values.questions,
+      isArchive: false,
       updatedAt: new Date().toISOString(),
     });
+
+    // After updating the quiz, refetch the quizzes to ensure UI is updated
+    await getQuizzes();
 
     return {
       status: 200,
     };
   } catch (error) {
+    console.error("Error updating quiz:", error); // Debugging: Log error
     return {
       status: 400,
       message: "Oops! something went wrong. Try again",
     };
   }
 };
+
 
 export const archiveQuiz = async (quizId: string) => {
   const user = await currentUser();

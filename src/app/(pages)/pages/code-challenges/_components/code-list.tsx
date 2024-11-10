@@ -1,10 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { Card } from "@/components/ui/card";
-import { Loader2, Edit, EllipsisVertical, Trash, ArchiveRestore } from "lucide-react";
+import {
+  Loader2,
+  Edit,
+  EllipsisVertical,
+  Trash,
+  ArchiveRestore,
+} from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import Image from "next/image";
 import { archiveCode, deleteCode, getCodes } from "@/actions/code";
 import parse from "html-react-parser";
 import { truncateString } from "@/lib/utils";
@@ -105,7 +110,7 @@ const CodeList = () => {
 
   return codes.map((code) => (
     <>
-     <AlertModal
+      <AlertModal
         isOpen={deleteModal}
         loading={loading}
         onClose={() => setDeleteModal(false)}
@@ -119,16 +124,13 @@ const CodeList = () => {
       />
       <div key={code.id}>
         <Card className="bg-transparent border-themeGray h-full rounded-xl overflow-hidden">
-          <div className="">
-            <Image
-              src={code.thumbnail}
-              alt="Code Challenge Thumbnail"
-              width={700}
-              height={400}
-            />
-          </div>
-          <div className="flex flex-col justify-center px-5 py-2">
-            <div className="flex justify-between items-center pb-3">
+          <img
+            src={code.thumbnail}
+            alt="cover"
+            className="h-4/6 w-full opacity-60"
+          />
+          <div className="h-2/6 flex flex-col justify-center px-5">
+            <div className="flex justify-between items-center">
               <h2 className="text-lg text-white font-semibold">{code.title}</h2>
               <DropdownMenu>
                 <DropdownMenuTrigger>

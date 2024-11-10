@@ -41,6 +41,7 @@ const QuizList = () => {
           setQuizzes(quizzes);
         }
       } else {
+        console.error("Failed to load quizzes:", message);
         toast.error(message || "Failed to load quizzes.");
       }
       setLoading(false);
@@ -140,7 +141,7 @@ const QuizList = () => {
           <div className="flex flex-col justify-center px-5 mt-3">
             <div className="flex justify-between items-center">
               <h2 className="text-lg text-white font-semibold">
-                {quiz.howManyQuiz} Questions
+                {quiz.quizTitle}
               </h2>
               <DropdownMenu>
                 <DropdownMenuTrigger>
@@ -179,7 +180,9 @@ const QuizList = () => {
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
-
+            <h2 className="text-sm text-muted-foreground">
+              {quiz.howManyQuiz} Questions
+            </h2>
             <p className="text-sm text-themeTextGray">
               {quiz.type === "multipleChoice"
                 ? "Multiple Choice"

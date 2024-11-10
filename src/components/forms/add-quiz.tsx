@@ -5,7 +5,6 @@ import React, { useEffect, useState } from "react";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { Loader } from "../global/loader";
-import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
 import {
@@ -21,6 +20,7 @@ import { createQuiz, updateQuiz } from "@/actions/quiz";
 
 const CreateQuiz = ({ initialData }: { initialData?: any }) => {
   const [isPending, setIsPending] = useState(false);
+  const [quizTitle, setQuizTitle] = useState("");
   const [howManyQuiz, setHowManyQuiz] = useState("1");
   const [type, setType] = useState("multipleChoice");
   const [difficulties, setDifficulties] = useState("beginner");
@@ -28,11 +28,11 @@ const CreateQuiz = ({ initialData }: { initialData?: any }) => {
     { question: "", correctAnswer: "", answers: "" },
   ]);
   const [errors, setErrors] = useState<string[]>([]);
-  const router = useRouter();
 
   // Set initial state from initialData
   useEffect(() => {
     if (initialData) {
+      setQuizTitle(initialData.quizTitle);
       setHowManyQuiz(initialData.howManyQuiz.toString());
       setType(initialData.type);
       setDifficulties(initialData.difficulties);
@@ -106,6 +106,7 @@ const CreateQuiz = ({ initialData }: { initialData?: any }) => {
 
     // Create a payload object
     const payload = {
+      quizTitle,
       howManyQuiz,
       type,
       difficulties,
@@ -118,7 +119,7 @@ const CreateQuiz = ({ initialData }: { initialData?: any }) => {
         const response = await updateQuiz(payload, initialData.id);
         if (response.status === 200) {
           toast.success("Quiz Updated Successfully");
-          router.push("/pages/quizzes");
+          window.location.assign("/pages/quizzes");
         } else {
           toast.error("Error updating quiz");
         }
@@ -126,7 +127,7 @@ const CreateQuiz = ({ initialData }: { initialData?: any }) => {
         const response = await createQuiz(payload);
         if (response.status === 200) {
           toast.success("Quiz Created Successfully");
-          router.push("/pages/quizzes");
+          window.location.assign("/pages/quizzes");
         } else {
           toast.error("Error creating quiz");
         }
@@ -186,6 +187,15 @@ const CreateQuiz = ({ initialData }: { initialData?: any }) => {
   return (
     <form className="mt-5" onSubmit={handleSubmit}>
       <div className="">
+        <div className="mb-3">
+          <Label>Quiz Title</Label>
+          <Input
+            value={quizTitle}
+            placeholder="Enter Quiz Title"
+            onChange={(e) => setQuizTitle(e.target.value)}
+            className="bg-themeBlack border-themeGray text-themeTextGray"
+          />
+        </div>
         <div>
           <Label>How Many Questions?</Label>
           <Input

@@ -56,7 +56,6 @@ export const createCourse = async (values: z.infer<typeof CourseSchema>) => {
 
 export const getCourses = async () => {
   try {
-    // Modify the query to include the where clause to filter by isArchive
     const courseQuery = query(
       collection(db, "Courses"),
       where("isArchive", "==", false)
@@ -66,10 +65,12 @@ export const getCourses = async () => {
     if (!courseSnapshot.empty) {
       const courseDocs = await Promise.all(
         courseSnapshot.docs.map(async (doc) => {
-          const courseData = doc.data();
+          const courseData = doc.data() as {
+            name: string;
+            moduleCount: number;
+          };
           const modulesResponse = await getModules(doc.id);
 
-          // Add the module count to each course
           return {
             id: doc.id,
             ...courseData,
@@ -81,9 +82,18 @@ export const getCourses = async () => {
         })
       );
 
+      // Sorting by numeric values in course names
+      const sortedCourses = courseDocs.sort((a, b) => {
+        // Extract leading numbers from course names
+        const aNum = parseInt(a.name.match(/^\D*(\d+)/)?.[1] || "0", 10);
+        const bNum = parseInt(b.name.match(/^\D*(\d+)/)?.[1] || "0", 10);
+
+        return aNum - bNum;
+      });
+
       return {
         status: 200,
-        courses: courseDocs,
+        courses: sortedCourses,
       };
     }
 
@@ -162,12 +172,15 @@ export const createModule = async (
     return { status: 400, message: `Validation Error: ${errors.join(", ")}` };
   }
 
-  const { name, number, content, imagesUrl } = validatedField.data;
+  const maxModuleNumber = await fetchMaxTopicNumber(courseId);
+  const newModuleNumber = maxModuleNumber === 0 ? 1 : maxModuleNumber + 1;
+
+  const { name, content, imagesUrl } = validatedField.data;
 
   try {
     const moduleRef = doc(collection(db, "Modules"));
     await setDoc(moduleRef, {
-      moduleNumber: number,
+      moduleNumber: newModuleNumber,
       name: name,
       content: content,
       userId: clerkId,
@@ -204,12 +217,11 @@ export const updateModule = async (
     return { status: 400, message: `Validation Error: ${errors.join(", ")}` };
   }
 
-  const { name, number, content, imagesUrl } = validatedField.data;
+  const { name, content, imagesUrl } = validatedField.data;
 
   try {
     const moduleRef = doc(db, "Modules", moduleId);
     await updateDoc(moduleRef, {
-      moduleNumber: number,
       name: name,
       content: content,
       userId: clerkId,
@@ -395,6 +407,7 @@ export const updateCourse = async (
       description: description,
       imageUrl: imageUrl,
       userId: clerkId,
+      isArchive: false,
       updatedAt: new Date().toISOString(),
     });
 
@@ -454,20 +467,38 @@ export const fetchMaxTopicNumber = async (
       limit(1)
     );
 
-    console.log("Fetching max module number for courseId:", courseId); // Debug courseId
+    console.log("Fetching max module number for courseId:", courseId);
 
     const querySnapshot = await getDocs(maxNumberQuery);
-    console.log("Number of documents fetched:", querySnapshot.size); // Check document count
+    console.log("Number of documents fetched:", querySnapshot.size);
 
-    if (!querySnapshot.empty) {
+    // If no modules are found for this courseId
+    if (querySnapshot.empty) {
+      console.warn(
+        `No modules found for courseId: ${courseId}. Returning 0 as the module number.`
+      );
+      return 0; // No modules yet, so the module number starts at 0 or 1
+    } else {
       const maxNumberDoc = querySnapshot.docs[0];
-      console.log("Max module number found:", maxNumberDoc.data().moduleNumber);
-      return maxNumberDoc.data().moduleNumber;
+      const moduleNumber = maxNumberDoc.data().moduleNumber;
+
+      // Ensure moduleNumber is a valid number
+      const validModuleNumber =
+        typeof moduleNumber === "number"
+          ? moduleNumber
+          : parseInt(moduleNumber, 10);
+
+      if (!isNaN(validModuleNumber)) {
+        console.log("Max module number found:", validModuleNumber);
+        return validModuleNumber;
+      } else {
+        console.warn("Invalid moduleNumber found:", moduleNumber);
+        return 0; // Return 0 if invalid module number
+      }
     }
-    return 0;
   } catch (error) {
     console.error("Error fetching max topic number:", error);
-    return 0;
+    return 0; // Return 0 in case of error
   }
 };
 

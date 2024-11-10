@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   Form,
   FormControl,
@@ -19,7 +19,6 @@ import { Button } from "../ui/button";
 import { Loader } from "../global/loader";
 import {
   createModule,
-  fetchMaxTopicNumber,
   updateModule,
 } from "@/actions/course";
 import { useRouter } from "next/navigation";
@@ -37,70 +36,23 @@ const AddModule = ({
   moduleId?: string;
 }) => {
   const [isPending, setIsPending] = useState(false);
-  const [nextTopicNumber, setNextTopicNumber] = useState(1);
   const router = useRouter();
 
   const form = useForm<z.infer<typeof ModuleSchema>>({
     resolver: zodResolver(ModuleSchema),
     mode: "onChange",
-    defaultValues: initialData
-      ? {
-          ...initialData,
-          number: initialData?.moduleNumber || nextTopicNumber,
-          name: initialData?.name || "",
-          content: initialData?.content || "",
-        }
-      : {
-          number: nextTopicNumber,
-          name: "",
-          content: "",
-          imagesUrl: [],
-        },
+    defaultValues: {
+      name: initialData?.name || "",
+      content: initialData?.content || "",
+      imagesUrl: initialData?.imagesUrl || [],
+    },
   });
-
-  useEffect(() => {
-    const getNextTopicNumber = async () => {
-      if (!courseId) {
-        console.warn(
-          "courseId is undefined. Skipping fetch for max topic number."
-        );
-        setNextTopicNumber(1);
-        return;
-      }
-
-      try {
-        const maxNumber = await fetchMaxTopicNumber(courseId);
-        console.log("Max module number fetched:", maxNumber);
-        setNextTopicNumber(maxNumber + 1);
-      } catch (error) {
-        console.error("Failed to fetch max topic number:", error);
-        setNextTopicNumber(1);
-      }
-    };
-
-    getNextTopicNumber();
-  }, [courseId]);
-
-  useEffect(() => {
-    if (!initialData) {
-      form.reset({
-        number: nextTopicNumber,
-        name: "",
-        content: "",
-        imagesUrl: [],
-      });
-    }
-  }, [nextTopicNumber, initialData, form]);
 
   const onSubmit = async (values: z.infer<typeof ModuleSchema>) => {
     try {
       setIsPending(true);
       if (initialData) {
-        const response = await updateModule(
-          values,
-          courseId,
-          moduleId as string
-        );
+        const response = await updateModule(values, courseId, moduleId as string);
         if (response.status === 200) {
           toast.success("Topic updated successfully");
           router.push(`/pages/courses/${courseId}`);
@@ -136,34 +88,11 @@ const AddModule = ({
         <div className="">
           <FormField
             control={form.control}
-            name="number"
-            disabled
-            render={({ field }) => (
-              <FormItem className="mb-3">
-                <FormLabel className="flex flex-col gap-2">
-                  Topic Number
-                </FormLabel>
-                <FormControl>
-                  <Input
-                    type="number"
-                    className="bg-themeBlack border-themeGray text-themeTextGray"
-                    placeholder="1"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
             name="name"
             disabled={isPending}
             render={({ field }) => (
               <FormItem className="mb-3">
-                <FormLabel className="flex flex-col gap-2">
-                  Topic Name
-                </FormLabel>
+                <FormLabel className="flex flex-col gap-2">Topic Name</FormLabel>
                 <FormControl>
                   <Input
                     className="bg-themeBlack border-themeGray text-themeTextGray"
@@ -181,9 +110,7 @@ const AddModule = ({
             name="content"
             render={({ field }) => (
               <FormItem className="mb-3">
-                <FormLabel className="flex flex-col gap-2">
-                  Topic Content
-                </FormLabel>
+                <FormLabel className="flex flex-col gap-2">Topic Content</FormLabel>
                 <FormControl>
                   <RichTextEditor
                     className="h-[300px]"
@@ -201,9 +128,7 @@ const AddModule = ({
             name="imagesUrl"
             render={({ field }) => (
               <FormItem className="mb-3">
-                <FormLabel className="flex flex-col gap-2">
-                  Topic Images
-                </FormLabel>
+                <FormLabel className="flex flex-col gap-2">Topic Images</FormLabel>
                 <FormControl>
                   <MultipleImageUpload
                     onImageUpload={(data) => field.onChange(data)}
