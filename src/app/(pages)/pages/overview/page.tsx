@@ -2,7 +2,7 @@
 
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { collection, getDocs, query } from "firebase/firestore";
+import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "@/lib/db";
 import QuizClient from "./_components/client";
 import { getStudentsWithQuizScore } from "@/actions/students";
@@ -56,7 +56,10 @@ const Overview = () => {
   React.useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const courseQuery = query(collection(db, "Courses"));
+        const courseQuery = query(
+          collection(db, "Courses"),
+          where("isArchive", "==", false)
+        );
         const courseSnapshot = await getDocs(courseQuery);
 
         if (!courseSnapshot.empty) {
@@ -72,6 +75,7 @@ const Overview = () => {
               };
             })
           );
+          console.log("Courses:", courseDocs); // Log courses
           setCourses(courseDocs);
         }
       } catch (error) {
@@ -85,7 +89,10 @@ const Overview = () => {
   React.useEffect(() => {
     const fetchVideos = async () => {
       try {
-        const videoQuery = query(collection(db, "Videos"));
+        const videoQuery = query(
+          collection(db, "Videos"),
+          where("isArchive", "==", false)
+        );
         const videoSnapshot = await getDocs(videoQuery);
 
         if (!videoSnapshot.empty) {
@@ -114,7 +121,10 @@ const Overview = () => {
   React.useEffect(() => {
     const fetchQuizzes = async () => {
       try {
-        const quizQuery = query(collection(db, "Quizzes"));
+        const quizQuery = query(
+          collection(db, "Quizzes"),
+          where("isArchive", "==", false)
+        );
         const quizSnapshot = await getDocs(quizQuery);
 
         if (!quizSnapshot.empty) {
@@ -143,7 +153,10 @@ const Overview = () => {
   React.useEffect(() => {
     const fetchCodes = async () => {
       try {
-        const codesQuery = query(collection(db, "CodeChallenges"));
+        const codesQuery = query(
+          collection(db, "CodeChallenges"),
+          where("isArchive", "==", false)
+        );
         const codesSnapshot = await getDocs(codesQuery);
 
         if (!codesSnapshot.empty) {
@@ -221,7 +234,13 @@ const Overview = () => {
               quizScores: formattedQuizScores, // Store quiz scores mapped by quizId
             };
           });
-          setStudentWithQuizScore(formattedStudents);
+
+          // Sort formattedStudents by name in ascending order
+          const sortedStudents = formattedStudents.sort((a, b) =>
+            a.name.localeCompare(b.name)
+          );
+
+          setStudentWithQuizScore(sortedStudents); // Set the sorted students
         }
       } else {
         toast.error(message || "Failed to load data.");

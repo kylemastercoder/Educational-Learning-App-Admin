@@ -34,6 +34,7 @@ const CourseList = () => {
       const { status, courses, message } = await getCourses();
       if (status === 200) {
         if (courses) {
+          console.log(courses);
           setCourses(courses);
         }
       } else {

@@ -230,6 +230,7 @@ export const updateVideo = async (
       userId: clerkId,
       method: method,
       thumbnail: thumbnail,
+      isArchive: false,
       updatedAt: new Date().toISOString(),
     });
 

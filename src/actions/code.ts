@@ -182,6 +182,7 @@ export const updateCode = async (
       correctOutput: correctOutput,
       userId: clerkId,
       thumbnail: imageUrl,
+      isArchive: false,
       updatedAt: new Date().toISOString(),
     });
 

@@ -185,7 +185,6 @@ export const updateQuiz = async (values: QuizValues, quizId: string) => {
   }
 };
 
-
 export const archiveQuiz = async (quizId: string) => {
   const user = await currentUser();
 
