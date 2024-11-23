@@ -264,7 +264,7 @@ const Overview = () => {
       <div className="container grid md:grid-cols-2 grid-cols-1 lg:grid-cols-3 2xl:grid-cols-5 py-10 gap-5">
         <Card className="bg-emerald-950">
           <CardHeader>
-            <CardTitle>Total Courses</CardTitle>
+            <CardTitle>Total Modules</CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-2xl font-bold">{courses.length}</p>
