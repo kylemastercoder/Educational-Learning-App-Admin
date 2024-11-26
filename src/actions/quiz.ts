@@ -2,7 +2,16 @@
 
 import { db } from "@/lib/db";
 import { currentUser } from "@clerk/nextjs/server";
-import { collection, deleteDoc, doc, getDocs, query, setDoc, updateDoc, where } from "firebase/firestore";
+import {
+  collection,
+  deleteDoc,
+  doc,
+  getDocs,
+  query,
+  setDoc,
+  updateDoc,
+  where,
+} from "firebase/firestore";
 
 interface Question {
   question: string;
@@ -12,6 +21,7 @@ interface Question {
 
 interface QuizValues {
   quizTitle: string;
+  module: string;
   howManyQuiz: string;
   type: string;
   difficulties: string;
@@ -29,6 +39,7 @@ export const createQuiz = async (values: QuizValues) => {
     await setDoc(quizRef, {
       userId: clerkId,
       quizTitle: values.quizTitle,
+      courseId: values.module,
       howManyQuiz: values.howManyQuiz,
       difficulties: values.difficulties,
       type: values.type,
@@ -162,6 +173,7 @@ export const updateQuiz = async (values: QuizValues, quizId: string) => {
     await setDoc(quizRef, {
       userId: clerkId,
       quizTitle: values.quizTitle,
+      courseId: values.module,
       howManyQuiz: values.howManyQuiz,
       difficulties: values.difficulties,
       type: values.type,

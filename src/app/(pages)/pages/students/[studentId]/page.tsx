@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/form";
 import Heading from "@/components/ui/heading";
 import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { UpdateStudentSchema } from "@/constants/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useParams } from "next/navigation";
@@ -33,6 +34,7 @@ type Student = {
   gender: string;
   studentNumber: string;
   username: string;
+  status: string;
 };
 
 const StudentPage = () => {
@@ -49,6 +51,7 @@ const StudentPage = () => {
       gender: student?.gender || "",
       course: student?.course || "",
       username: student?.username || "",
+      status: student?.status || "",
     },
   });
 
@@ -73,6 +76,7 @@ const StudentPage = () => {
           gender: student.gender,
           course: student.course,
           username: student.username,
+          status: student.status,
         });
       } else {
         toast.error(message || "Failed to load student.");
@@ -246,6 +250,28 @@ const StudentPage = () => {
                     placeholder="Enter username"
                     {...field}
                   />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="status"
+            disabled={isPending}
+            render={({ field }) => (
+              <FormItem className="mb-3">
+                <FormLabel className="flex flex-col gap-2">Status</FormLabel>
+                <FormControl>
+                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select Status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Approved">Approved</SelectItem>
+                      <SelectItem value="Rejected">Rejected</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </FormControl>
                 <FormMessage />
               </FormItem>

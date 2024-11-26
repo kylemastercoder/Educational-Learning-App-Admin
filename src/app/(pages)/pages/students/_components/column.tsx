@@ -18,6 +18,7 @@ export type StudentColumn = {
   gender: string;
   studentNumber: string;
   username: string;
+  status: string;
 };
 
 export const columns: ColumnDef<StudentColumn>[] = [
@@ -67,6 +68,10 @@ export const columns: ColumnDef<StudentColumn>[] = [
   {
     accessorKey: "course",
     header: "Course",
+  },
+  {
+    accessorKey: "status",
+    header: "Status",
   },
   {
     id: "actions",

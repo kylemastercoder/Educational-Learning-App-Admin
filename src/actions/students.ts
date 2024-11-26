@@ -38,6 +38,7 @@ export const getStudents = async () => {
           gender: data.gender || "Unknown Gender",
           studentNumber: data.studentNo || "Unknown Student Number",
           username: data.username || "Unknown Username",
+          status: data.status || "Unknown Status",
         };
       });
 
@@ -174,6 +175,7 @@ export const getStudentById = async (studentId: string) => {
         gender: data.gender || "Unknown Gender",
         studentNumber: data.studentNo || "Unknown Student Number",
         username: data.username || "Unknown Username",
+        status: data.status || "Unknown Status",
       };
 
       return {
@@ -225,7 +227,7 @@ export const updateStudent = async (
     return { status: 400, message: `Validation Error: ${errors.join(", ")}` };
   }
 
-  const { name, email, gender, username, birthdate, course, age } =
+  const { name, email, gender, username, birthdate, course, age, status } =
     validatedField.data;
 
   try {
@@ -238,6 +240,7 @@ export const updateStudent = async (
       username: username,
       course: course,
       gender: gender,
+      status: status,
     });
 
     return {

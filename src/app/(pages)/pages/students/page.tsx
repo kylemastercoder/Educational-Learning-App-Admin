@@ -20,6 +20,7 @@ type Student = {
   gender: string;
   studentNumber: string;
   username: string;
+  status: string;
 };
 
 const Students = () => {
@@ -62,6 +63,7 @@ const Students = () => {
     block: item.block,
     gender: item.gender,
     studentNumber: item.studentNumber,
+    status: item.status,
     username: item.username,
   }));
   

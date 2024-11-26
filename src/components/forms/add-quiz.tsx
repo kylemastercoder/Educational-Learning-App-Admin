@@ -17,10 +17,20 @@ import {
 } from "../ui/table";
 import { Label } from "../ui/label";
 import { createQuiz, updateQuiz } from "@/actions/quiz";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { getCourses } from "@/actions/course";
 
 const CreateQuiz = ({ initialData }: { initialData?: any }) => {
   const [isPending, setIsPending] = useState(false);
   const [quizTitle, setQuizTitle] = useState("");
+  const [module, setModule] = useState("");
+  const [moduleData, setModuleData] = useState<{ moduleCount: number; name: string; id: string; }[]>([]);
   const [howManyQuiz, setHowManyQuiz] = useState("1");
   const [type, setType] = useState("multipleChoice");
   const [difficulties, setDifficulties] = useState("beginner");
@@ -33,12 +43,31 @@ const CreateQuiz = ({ initialData }: { initialData?: any }) => {
   useEffect(() => {
     if (initialData) {
       setQuizTitle(initialData.quizTitle);
+      setModule(initialData.module);
       setHowManyQuiz(initialData.howManyQuiz.toString());
       setType(initialData.type);
       setDifficulties(initialData.difficulties);
       setQuestions(initialData.questions || []);
     }
   }, [initialData]);
+
+  useEffect(() => {
+    // Fetch module data
+    const fetchModuleData = async () => {
+      try {
+        const response = await getCourses();
+        if (response.courses) {
+          setModuleData(response.courses);
+        } else {
+          setModuleData([]);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchModuleData();
+  }, []);
 
   useEffect(() => {
     const numQuestions = parseInt(howManyQuiz, 10);
@@ -107,6 +136,7 @@ const CreateQuiz = ({ initialData }: { initialData?: any }) => {
     // Create a payload object
     const payload = {
       quizTitle,
+      module,
       howManyQuiz,
       type,
       difficulties,
@@ -195,6 +225,19 @@ const CreateQuiz = ({ initialData }: { initialData?: any }) => {
             onChange={(e) => setQuizTitle(e.target.value)}
             className="bg-themeBlack border-themeGray text-themeTextGray"
           />
+        </div>
+        <div className="mb-3">
+          <Label>Module</Label>
+          <Select value={module} onValueChange={(value) => setModule(value)}>
+            <SelectTrigger className="bg-themeBlack border-themeGray text-themeTextGray">
+              <SelectValue placeholder="Select Module" />
+            </SelectTrigger>
+            <SelectContent>
+              {moduleData.map((item) => (
+                <SelectItem key={item.id} value={item.id}>{item.name}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
         <div>
           <Label>How Many Questions?</Label>

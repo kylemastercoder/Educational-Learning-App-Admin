@@ -111,4 +111,5 @@ export const UpdateStudentSchema = z.object({
   course: z.string().min(1, { message: "Course is required" }),
   gender: z.string().min(1, { message: "Gender is required" }),
   username: z.string().min(1, { message: "Username is required" }),
+  status: z.string().min(1, { message: "Status is required" }),
 });
