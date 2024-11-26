@@ -22,7 +22,7 @@ export const onAuthenticatedUser = async () => {
       collection(db, "Instructors"),
       where("clerkId", "==", clerkId)
     );
-    
+
     const querySnapshot = await getDocs(q);
 
     if (!querySnapshot.empty) {
@@ -33,6 +33,7 @@ export const onAuthenticatedUser = async () => {
         clerkId: userDocs[0].clerkId,
         image: userDocs[0].image,
         username: userDocs[0].username,
+        isAdmin: userDocs[0].isAdmin,
       };
     }
 
@@ -58,6 +59,7 @@ export const onSignUpUser = async (data: {
       username: `${data.firstname} ${data.lastname}`,
       image: data.image,
       clerkId: data.clerkId,
+      isAdmin: false,
     });
 
     return {

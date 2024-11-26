@@ -4,10 +4,7 @@ import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "@/lib/db";
-import QuizClient from "./_components/client";
-import { getStudentsWithQuizScore } from "@/actions/students";
-import { Loader2 } from "lucide-react";
-import { toast } from "sonner";
+import { QuizModal } from "./_components/quiz-modal";
 
 interface Course {
   id: string;
@@ -38,20 +35,8 @@ interface Students {
   name: string;
 }
 
-type StudentWithQuizScore = {
-  id: string;
-  name: string;
-  email: string;
-  profile: string;
-  studentNumber: string;
-  quizScores: Record<string, string>;
-};
-
 const Overview = () => {
-  const [loading, setLoading] = React.useState(true);
-  const [studentWithQuizScore, setStudentWithQuizScore] = React.useState<
-    StudentWithQuizScore[]
-  >([]);
+  const [open, setOpen] = React.useState(false);
   const [courses, setCourses] = React.useState<Course[]>([]);
   React.useEffect(() => {
     const fetchCourses = async () => {
@@ -209,58 +194,14 @@ const Overview = () => {
     fetchStudents();
   }, []);
 
-  React.useEffect(() => {
-    const fetchStudentsWithScore = async () => {
-      setLoading(true);
-      const { status, students, message } = await getStudentsWithQuizScore();
-      if (status === 200) {
-        if (students) {
-          const formattedStudents = students.map((student) => {
-            const quizScores = Object.keys(student.quizScores);
-            console.log("Quiz Scores for student:", student.name, quizScores); // Log quiz scores
-
-            const formattedQuizScores = quizScores.reduce((acc, quizId) => {
-              const [score, total] = student.quizScores[quizId].split("/");
-              acc[quizId] = `${score}/${total}`; // Map to the expected format
-              return acc;
-            }, {} as Record<string, string>);
-
-            return {
-              id: student.id,
-              name: student.name,
-              studentNumber: student.studentNumber,
-              email: student.email,
-              profile: student.profile,
-              quizScores: formattedQuizScores, // Store quiz scores mapped by quizId
-            };
-          });
-
-          // Sort formattedStudents by name in ascending order
-          const sortedStudents = formattedStudents.sort((a, b) =>
-            a.name.localeCompare(b.name)
-          );
-
-          setStudentWithQuizScore(sortedStudents); // Set the sorted students
-        }
-      } else {
-        toast.error(message || "Failed to load data.");
-      }
-      setLoading(false);
-    };
-
-    fetchStudentsWithScore();
-  }, []);
-
-  if (loading) {
-    return (
-      <div className="flex items-center m-auto mt-20">
-        <Loader2 size={50} className="animate-spin" />
-      </div>
-    );
-  }
-
   return (
     <>
+      <QuizModal
+        isOpen={open}
+        onClose={() => setOpen(false)}
+        title="Total Quizzes"
+        description=""
+      />
       <div className="container grid md:grid-cols-2 grid-cols-1 lg:grid-cols-3 2xl:grid-cols-5 py-10 gap-5">
         <Card className="bg-emerald-950">
           <CardHeader>
@@ -278,7 +219,7 @@ const Overview = () => {
             <p className="text-2xl font-bold">{videoLectures.length}</p>
           </CardContent>
         </Card>
-        <Card className="bg-red-950">
+        <Card onClick={() => setOpen(true)} className="bg-red-950 cursor-pointer">
           <CardHeader>
             <CardTitle>Total Quizzes</CardTitle>
           </CardHeader>
@@ -303,16 +244,6 @@ const Overview = () => {
           </CardContent>
         </Card>
       </div>
-      <QuizClient
-        data={studentWithQuizScore.map((student) => ({
-          id: student.id,
-          name: student.name,
-          email: student.email,
-          profile: student.profile,
-          studentNumber: student.studentNumber,
-          quizScores: student.quizScores, // Now quizScores is an object
-        }))}
-      />
     </>
   );
 };

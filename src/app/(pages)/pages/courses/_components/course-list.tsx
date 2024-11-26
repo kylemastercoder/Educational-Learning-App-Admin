@@ -3,7 +3,14 @@
 import { archiveCourse, deleteCourse, getCourses } from "@/actions/course";
 import { Card } from "@/components/ui/card";
 import { truncateString } from "@/lib/utils";
-import { ArchiveRestore, Edit, EllipsisVertical, Loader2, Notebook, Trash } from "lucide-react";
+import {
+  ArchiveRestore,
+  Edit,
+  EllipsisVertical,
+  Loader2,
+  Notebook,
+  Trash,
+} from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import {
@@ -20,7 +27,7 @@ import { Modal } from "@/components/ui/modal";
 import AlertModal from "@/components/ui/alert-modal";
 import ArchiveModal from "@/components/ui/archive-modal";
 
-const CourseList = () => {
+const CourseList = ({ user }: { user: any }) => {
   const [courses, setCourses] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [editModal, setEditModal] = useState(false);
@@ -137,39 +144,52 @@ const CourseList = () => {
                 <DropdownMenuContent>
                   <DropdownMenuLabel>Actions</DropdownMenuLabel>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem
-                    onClick={() => router.push(`/pages/courses/${course.id}`)}
-                  >
-                    <Notebook className="w-4 h-4 mr-2" />
-                    Create Topic
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    onClick={() => {
-                      setSelectedCourse(course); // Set the selected course data
-                      setEditModal(true);
-                    }}
-                  >
-                    <Edit className="w-4 h-4 mr-2" />
-                    Edit
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    onClick={() => {
-                      setSelectedCourse(course); // Set the selected course data
-                      setDeleteModal(true);
-                    }}
-                  >
-                    <Trash className="w-4 h-4 mr-2" />
-                    Delete
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    onClick={() => {
-                      setSelectedCourse(course);
-                      setArchiveModal(true);
-                    }}
-                  >
-                    <ArchiveRestore className="w-4 h-4 mr-2" />
-                    Archive
-                  </DropdownMenuItem>
+                  {user.isAdmin ? (
+                    <>
+                      <DropdownMenuItem
+                        onClick={() =>
+                          router.push(`/pages/courses/${course.id}`)
+                        }
+                      >
+                        <Notebook className="w-4 h-4 mr-2" />
+                        Create Topic
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={() => {
+                          setSelectedCourse(course); // Set the selected course data
+                          setEditModal(true);
+                        }}
+                      >
+                        <Edit className="w-4 h-4 mr-2" />
+                        Edit
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={() => {
+                          setSelectedCourse(course); // Set the selected course data
+                          setDeleteModal(true);
+                        }}
+                      >
+                        <Trash className="w-4 h-4 mr-2" />
+                        Delete
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={() => {
+                          setSelectedCourse(course);
+                          setArchiveModal(true);
+                        }}
+                      >
+                        <ArchiveRestore className="w-4 h-4 mr-2" />
+                        Archive
+                      </DropdownMenuItem>
+                    </>
+                  ) : (
+                    <DropdownMenuItem
+                      onClick={() => router.push(`/pages/courses/${course.id}`)}
+                    >
+                      <Notebook className="w-4 h-4 mr-2" />
+                      View Topics
+                    </DropdownMenuItem>
+                  )}
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>

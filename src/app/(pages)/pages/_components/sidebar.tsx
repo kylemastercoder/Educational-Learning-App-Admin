@@ -1,7 +1,16 @@
 "use client";
 
+import { onAuthenticatedUser } from "@/actions/auth";
 import { cn } from "@/lib/utils";
-import { BookTextIcon, BrainIcon, CodeXml, LayoutDashboardIcon, UsersIcon, VideoIcon } from "lucide-react";
+import {
+  BookTextIcon,
+  BrainIcon,
+  CodeXml,
+  GraduationCapIcon,
+  LayoutDashboardIcon,
+  UsersIcon,
+  VideoIcon,
+} from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";
@@ -11,7 +20,21 @@ type Props = {
 };
 
 const Sidebar = ({ mobile }: Props) => {
+  const [isAdmin, setIsAdmin] = React.useState(false);
   const pathname = usePathname();
+
+  React.useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const response = await onAuthenticatedUser();
+        setIsAdmin(response.isAdmin);
+      } catch (error) {
+        console.error("Error fetching user data", error);
+      }
+    };
+
+    fetchUserData();
+  }, []);
   return (
     <div
       className={cn(
@@ -24,7 +47,9 @@ const Sidebar = ({ mobile }: Props) => {
         <p className="text-[10px] text-[#F7ECE9]">MAIN MENU</p>
         <Link
           className={`flex text-sm gap-x-2 items-center font-semibold rounded-xl hover:bg-themeGray p-2 ${
-            pathname === "/pages/overview" ? "text-white bg-themeGray" : "text-themeTextGray"
+            pathname === "/pages/overview"
+              ? "text-white bg-themeGray"
+              : "text-themeTextGray"
           }`}
           href={`/pages/overview`}
         >
@@ -39,11 +64,13 @@ const Sidebar = ({ mobile }: Props) => {
         </Link>
         <Link
           className={`flex text-sm gap-x-2 items-center font-semibold rounded-xl hover:bg-themeGray p-2 ${
-            pathname === "/pages/students" ? "text-white bg-themeGray" : "text-themeTextGray"
+            pathname === "/pages/students"
+              ? "text-white bg-themeGray"
+              : "text-themeTextGray"
           }`}
           href={`/pages/students`}
         >
-          <UsersIcon
+          <GraduationCapIcon
             className={`w-5 h-5 ${
               pathname === "/pages/students"
                 ? "text-white"
@@ -52,9 +79,30 @@ const Sidebar = ({ mobile }: Props) => {
           />
           Student Accounts
         </Link>
+        {isAdmin && (
+          <Link
+            className={`flex text-sm gap-x-2 items-center font-semibold rounded-xl hover:bg-themeGray p-2 ${
+              pathname === "/pages/instructors"
+                ? "text-white bg-themeGray"
+                : "text-themeTextGray"
+            }`}
+            href={`/pages/instructors`}
+          >
+            <UsersIcon
+              className={`w-5 h-5 ${
+                pathname === "/pages/instructors"
+                  ? "text-white"
+                  : "text-themeTextGray"
+              }`}
+            />
+            Instructor Accounts
+          </Link>
+        )}
         <Link
           className={`flex text-sm gap-x-2 items-center font-semibold rounded-xl hover:bg-themeGray p-2 ${
-            pathname === "/pages/courses" ? "text-white bg-themeGray" : "text-themeTextGray"
+            pathname === "/pages/courses"
+              ? "text-white bg-themeGray"
+              : "text-themeTextGray"
           }`}
           href={`/pages/courses`}
         >
@@ -69,22 +117,24 @@ const Sidebar = ({ mobile }: Props) => {
         </Link>
         <Link
           className={`flex text-sm gap-x-2 items-center font-semibold rounded-xl hover:bg-themeGray p-2 ${
-            pathname === "/pages/videos" ? "text-white bg-themeGray" : "text-themeTextGray"
+            pathname === "/pages/videos"
+              ? "text-white bg-themeGray"
+              : "text-themeTextGray"
           }`}
           href={`/pages/videos`}
         >
           <VideoIcon
             className={`w-5 h-5 ${
-              pathname === "/pages/videos"
-                ? "text-white"
-                : "text-themeTextGray"
+              pathname === "/pages/videos" ? "text-white" : "text-themeTextGray"
             }`}
           />
           Video Lectures
         </Link>
         <Link
           className={`flex text-sm gap-x-2 items-center font-semibold rounded-xl hover:bg-themeGray p-2 ${
-            pathname === "/pages/quizzes" ? "text-white bg-themeGray" : "text-themeTextGray"
+            pathname === "/pages/quizzes"
+              ? "text-white bg-themeGray"
+              : "text-themeTextGray"
           }`}
           href={`/pages/quizzes`}
         >
@@ -99,7 +149,9 @@ const Sidebar = ({ mobile }: Props) => {
         </Link>
         <Link
           className={`flex text-sm gap-x-2 items-center font-semibold rounded-xl hover:bg-themeGray p-2 ${
-            pathname === "/pages/code-challenges" ? "text-white bg-themeGray" : "text-themeTextGray"
+            pathname === "/pages/code-challenges"
+              ? "text-white bg-themeGray"
+              : "text-themeTextGray"
           }`}
           href={`/pages/code-challenges`}
         >

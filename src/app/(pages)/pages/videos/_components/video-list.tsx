@@ -3,7 +3,13 @@
 import { archiveVideo, deleteVideo, getVideos } from "@/actions/video";
 import { Card } from "@/components/ui/card";
 import { truncateString } from "@/lib/utils";
-import { Loader2, Edit, EllipsisVertical, Trash, ArchiveRestore } from "lucide-react";
+import {
+  Loader2,
+  Edit,
+  EllipsisVertical,
+  Trash,
+  ArchiveRestore,
+} from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import parse from "html-react-parser";
@@ -21,7 +27,7 @@ import AlertModal from "@/components/ui/alert-modal";
 import Image from "next/image";
 import ArchiveModal from "@/components/ui/archive-modal";
 
-const VideoList = () => {
+const VideoList = ({ user }: { user: any }) => {
   const [videos, setVideos] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [editModal, setEditModal] = useState(false);
@@ -131,42 +137,44 @@ const VideoList = () => {
           <div className="h-2/6 flex flex-col justify-center px-5">
             <div className="flex items-center justify-between">
               <h2 className="text-lg text-white font-semibold">{video.name}</h2>
-              <DropdownMenu>
-                <DropdownMenuTrigger>
-                  <EllipsisVertical className="w-4 h-4" />
-                </DropdownMenuTrigger>
-                <DropdownMenuContent>
-                  <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem
-                    onClick={() => {
-                      setSelectedVideo(video); // Set the selected video data
-                      setEditModal(true);
-                    }}
-                  >
-                    <Edit className="w-4 h-4 mr-2" />
-                    Edit
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    onClick={() => {
-                      setSelectedVideo(video); // Set the selected video data
-                      setDeleteModal(true);
-                    }}
-                  >
-                    <Trash className="w-4 h-4 mr-2" />
-                    Delete
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    onClick={() => {
-                      setSelectedVideo(video);
-                      setArchiveModal(true);
-                    }}
-                  >
-                    <ArchiveRestore className="w-4 h-4 mr-2" />
-                    Archive
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+              {user.isAdmin && (
+                <DropdownMenu>
+                  <DropdownMenuTrigger>
+                    <EllipsisVertical className="w-4 h-4" />
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent>
+                    <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem
+                      onClick={() => {
+                        setSelectedVideo(video); // Set the selected video data
+                        setEditModal(true);
+                      }}
+                    >
+                      <Edit className="w-4 h-4 mr-2" />
+                      Edit
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => {
+                        setSelectedVideo(video); // Set the selected video data
+                        setDeleteModal(true);
+                      }}
+                    >
+                      <Trash className="w-4 h-4 mr-2" />
+                      Delete
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => {
+                        setSelectedVideo(video);
+                        setArchiveModal(true);
+                      }}
+                    >
+                      <ArchiveRestore className="w-4 h-4 mr-2" />
+                      Archive
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              )}
             </div>
             <p className="text-sm text-themeTextGray">
               {parse(truncateString(video.description))}

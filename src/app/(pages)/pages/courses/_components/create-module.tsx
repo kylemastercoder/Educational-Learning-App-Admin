@@ -29,6 +29,7 @@ import { CSS } from "@dnd-kit/utilities";
 
 type CreateCourseModuleProps = {
   courseId: string;
+  user: any;
 };
 
 type Module = {
@@ -37,7 +38,10 @@ type Module = {
   moduleNumber: number;
 };
 
-export const CreateCourseModule = ({ courseId }: CreateCourseModuleProps) => {
+export const CreateCourseModule = ({
+  courseId,
+  user,
+}: CreateCourseModuleProps) => {
   const [sortedModules, setSortedModules] = useState<Module[]>([]);
   const [loading, setLoading] = useState(true);
   const params = useParams();
@@ -102,24 +106,26 @@ export const CreateCourseModule = ({ courseId }: CreateCourseModuleProps) => {
 
   return (
     <div className="flex flex-col">
-      <GlassModal
-        className="max-h-screen max-w-full overflow-auto"
-        title="Create a new topic for your course"
-        description="Topics are a great way to organize your module content."
-        trigger={
-          <div className="flex flex-col gap-y-2">
-            <Button
-              variant="outline"
-              className="flex items-center bg-themeBlack hover:bg-themeDarkGray"
-            >
-              <PlusCircle className="w-4 h-4 mr-2" />
-              Create Topic
-            </Button>
-          </div>
-        }
-      >
-        <AddModule courseId={courseId} />
-      </GlassModal>
+      {user.isAdmin && (
+        <GlassModal
+          className="max-h-screen max-w-full overflow-auto"
+          title="Create a new topic for your course"
+          description="Topics are a great way to organize your module content."
+          trigger={
+            <div className="flex flex-col gap-y-2">
+              <Button
+                variant="outline"
+                className="flex items-center bg-themeBlack hover:bg-themeDarkGray"
+              >
+                <PlusCircle className="w-4 h-4 mr-2" />
+                Create Topic
+              </Button>
+            </div>
+          }
+        >
+          <AddModule courseId={courseId} />
+        </GlassModal>
+      )}
       {loading && (
         <div className="flex items-center m-auto mt-20">
           <Loader2 size={20} className="animate-spin" />

@@ -1,5 +1,4 @@
-"use client";
-
+import { onAuthenticatedUser } from "@/actions/auth";
 import { CreateCourseModule } from "../_components/create-module";
 
 type CourseLayoutProps = {
@@ -9,12 +8,13 @@ type CourseLayoutProps = {
   children: React.ReactNode;
 };
 
-const CourseLayout = ({ params, children }: CourseLayoutProps) => {
+const CourseLayout = async ({ params, children }: CourseLayoutProps) => {
+  const user = await onAuthenticatedUser();
   return (
     <>
       <div className="grid grid-cols-1 h-full lg:grid-cols-4 overflow-hidden">
         <div className="bg-themeBlack p-5 overflow-y-auto">
-          <CreateCourseModule courseId={params.courseId} />
+          <CreateCourseModule user={user} courseId={params.courseId} />
         </div>
         <div className="lg:col-span-3 max-h-full h-full pb-10 overflow-y-auto bg-[#101011]/90">
           {children}
