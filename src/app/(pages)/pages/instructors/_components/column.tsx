@@ -17,7 +17,7 @@ export const columns: ColumnDef<InstructorColumn>[] = [
   },
   {
     accessorKey: "name",
-    header: "Student",
+    header: "Instructor",
     cell: ({ row }) => (
       <div className="flex items-center gap-x-2">
         <Avatar className="w-10 h-10 object-cover rounded-md">
@@ -28,7 +28,6 @@ export const columns: ColumnDef<InstructorColumn>[] = [
         </Avatar>
         <div className="flex flex-col">
           <p className="font-semibold">{row.original.name}</p>
-          <p className="text-muted-foreground text-sm">Instructor</p>
         </div>
       </div>
     ),
