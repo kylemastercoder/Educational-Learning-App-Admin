@@ -265,7 +265,7 @@ const StudentPage = () => {
                 <FormControl>
                   <Select onValueChange={field.onChange} defaultValue={field.value}>
                     <SelectTrigger>
-                      <SelectValue placeholder="Select Status" />
+                      <SelectValue placeholder="Select a Status" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="Approved">Approved</SelectItem>
