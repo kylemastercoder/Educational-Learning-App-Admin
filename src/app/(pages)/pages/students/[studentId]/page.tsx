@@ -130,7 +130,7 @@ const StudentPage = () => {
                 <FormLabel className="flex flex-col gap-2">Name</FormLabel>
                 <FormControl>
                   <Input
-                    className="bg-themeBlack border-themeGray text-themeTextGray"
+                    className="dark:bg-themeBlack dark:border-themeGray dark:text-themeTextGray bg-white border-zinc-100 text-black"
                     placeholder="Juan Dela Cruz"
                     {...field}
                   />
@@ -149,7 +149,7 @@ const StudentPage = () => {
                 <FormControl>
                   <Input
                     type="email"
-                    className="bg-themeBlack border-themeGray text-themeTextGray"
+                    className="dark:bg-themeBlack dark:border-themeGray dark:text-themeTextGray bg-white border-zinc-100 text-black"
                     placeholder="jdelacruz@gmail.com"
                     {...field}
                   />
@@ -171,7 +171,7 @@ const StudentPage = () => {
                   <FormControl>
                     <Input
                       readOnly
-                      className="bg-themeBlack border-themeGray text-themeTextGray"
+                      className="dark:bg-themeBlack dark:border-themeGray dark:text-themeTextGray bg-white border-zinc-100 text-black"
                       placeholder="Select birthdate"
                       {...field}
                     />
@@ -190,7 +190,7 @@ const StudentPage = () => {
                   <FormControl>
                     <Input
                       readOnly
-                      className="bg-themeBlack border-themeGray text-themeTextGray"
+                      className="dark:bg-themeBlack dark:border-themeGray dark:text-themeTextGray bg-white border-zinc-100 text-black"
                       placeholder="Enter age"
                       {...field}
                     />
@@ -209,7 +209,7 @@ const StudentPage = () => {
                 <FormLabel className="flex flex-col gap-2">Gender</FormLabel>
                 <FormControl>
                   <Input
-                    className="bg-themeBlack border-themeGray text-themeTextGray"
+                    className="dark:bg-themeBlack dark:border-themeGray dark:text-themeTextGray bg-white border-zinc-100 text-black"
                     placeholder="Enter gender"
                     {...field}
                   />
@@ -228,7 +228,7 @@ const StudentPage = () => {
                 <FormControl>
                   <Input
                     readOnly
-                    className="bg-themeBlack border-themeGray text-themeTextGray"
+                    className="dark:bg-themeBlack dark:border-themeGray dark:text-themeTextGray bg-white border-zinc-100 text-black"
                     placeholder="Enter course"
                     {...field}
                   />
@@ -246,7 +246,7 @@ const StudentPage = () => {
                 <FormLabel className="flex flex-col gap-2">Username</FormLabel>
                 <FormControl>
                   <Input
-                    className="bg-themeBlack border-themeGray text-themeTextGray"
+                    className="dark:bg-themeBlack dark:border-themeGray dark:text-themeTextGray bg-white border-zinc-100 text-black"
                     placeholder="Enter username"
                     {...field}
                   />
@@ -264,7 +264,7 @@ const StudentPage = () => {
                 <FormLabel className="flex flex-col gap-2">Status</FormLabel>
                 <FormControl>
                   <Select onValueChange={field.onChange} defaultValue={field.value}>
-                    <SelectTrigger>
+                    <SelectTrigger className="dark:bg-themeBlack dark:border-themeGray dark:text-themeTextGray bg-white border-zinc-100 text-black">
                       <SelectValue placeholder="Select a Status" />
                     </SelectTrigger>
                     <SelectContent>

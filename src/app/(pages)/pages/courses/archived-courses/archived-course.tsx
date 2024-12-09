@@ -126,7 +126,7 @@ const ArchivedCourseList = () => {
         onConfirm={onArchive}
       />
       <div key={course.id}>
-        <Card className="bg-transparent border-themeGray h-full rounded-xl overflow-hidden">
+        <Card className="bg-transparent dark:border-themeGray border-zinc-300 h-full rounded-xl overflow-hidden">
           <img
             src={course.imageUrl}
             alt="cover"
@@ -134,7 +134,7 @@ const ArchivedCourseList = () => {
           />
           <div className="h-2/6 flex flex-col justify-center px-5">
             <div className="flex justify-between items-center">
-              <h2 className="text-lg text-white font-semibold">
+              <h2 className="text-lg dark:text-white text-black font-semibold">
                 {course.name}
               </h2>
               <DropdownMenu>
@@ -180,7 +180,7 @@ const ArchivedCourseList = () => {
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
-            <p className="text-sm text-themeTextGray">
+            <p className="text-sm dark:text-themeTextGray text-zinc-700">
               {truncateString(course.description)}
             </p>
           </div>

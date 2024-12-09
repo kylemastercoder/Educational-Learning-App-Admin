@@ -96,7 +96,7 @@ const CreateVideo = ({ initialData }: { initialData?: any }) => {
                 <FormLabel className="flex flex-col gap-2">Name</FormLabel>
                 <FormControl>
                   <Input
-                    className="bg-themeBlack border-themeGray text-themeTextGray"
+                    className="dark:bg-themeBlack dark:border-themeGray dark:text-themeTextGray bg-white border-zinc-100 text-black"
                     placeholder="Fundamentals of C Language"
                     {...field}
                   />
@@ -190,7 +190,7 @@ const CreateVideo = ({ initialData }: { initialData?: any }) => {
                   </FormLabel>
                   <FormControl>
                     <Input
-                      className="bg-themeBlack border-themeGray text-themeTextGray"
+                      className="dark:bg-themeBlack dark:border-themeGray dark:text-themeTextGray bg-white border-zinc-100 text-black"
                       placeholder="Paste YouTube URL here"
                       {...field}
                     />
@@ -220,7 +220,7 @@ const CreateVideo = ({ initialData }: { initialData?: any }) => {
           <Button
             variant="outline"
             type="submit"
-            className="bg-themeBlack mt-2 w-full border-themeGray rounded-xl"
+            className="dark:bg-themeBlack bg-white mt-2 w-full border-themeGray rounded-xl"
           >
             <Loader loading={isPending}>
               {initialData ? "Save Changes" : "Upload Video Lecture"}

@@ -25,10 +25,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { getCourses } from "@/actions/course";
+import { Textarea } from "../ui/textarea";
 
 const CreateQuiz = ({ initialData }: { initialData?: any }) => {
   const [isPending, setIsPending] = useState(false);
   const [quizTitle, setQuizTitle] = useState("");
+  const [instruction, setInstruction] = useState("");
   const [module, setModule] = useState("");
   const [moduleData, setModuleData] = useState<{ moduleCount: number; name: string; id: string; }[]>([]);
   const [howManyQuiz, setHowManyQuiz] = useState("1");
@@ -43,6 +45,7 @@ const CreateQuiz = ({ initialData }: { initialData?: any }) => {
   useEffect(() => {
     if (initialData) {
       setQuizTitle(initialData.quizTitle);
+      setInstruction(initialData.instruction);
       setModule(initialData.module);
       setHowManyQuiz(initialData.howManyQuiz.toString());
       setType(initialData.type);
@@ -139,6 +142,7 @@ const CreateQuiz = ({ initialData }: { initialData?: any }) => {
       module,
       howManyQuiz,
       type,
+      instruction,
       difficulties,
       questions,
     };
@@ -180,7 +184,7 @@ const CreateQuiz = ({ initialData }: { initialData?: any }) => {
               value={questions[index].question || ""}
               onChange={(e) => handleChange(index, "question", e.target.value)}
               placeholder={`Enter question ${index + 1}`}
-              className="bg-themeBlack border-themeGray text-themeTextGray"
+              className="dark:bg-themeBlack dark:border-themeGray dark:text-themeTextGray bg-white border-zinc-100 text-black"
             />
           </div>
         </TableCell>
@@ -192,7 +196,7 @@ const CreateQuiz = ({ initialData }: { initialData?: any }) => {
                 value={questions[index].answers || ""}
                 onChange={(e) => handleChange(index, "answers", e.target.value)}
                 placeholder={`Enter answers separated by comma`}
-                className="bg-themeBlack border-themeGray text-themeTextGray"
+                className="dark:bg-themeBlack dark:border-themeGray dark:text-themeTextGray bg-white border-zinc-100 text-black"
               />
             </div>
           </TableCell>
@@ -206,7 +210,7 @@ const CreateQuiz = ({ initialData }: { initialData?: any }) => {
                 handleChange(index, "correctAnswer", e.target.value)
               }
               placeholder={`Enter correct answer`}
-              className="bg-themeBlack border-themeGray text-themeTextGray"
+              className="dark:bg-themeBlack dark:border-themeGray dark:text-themeTextGray bg-white border-zinc-100 text-black"
             />
           </div>
         </TableCell>
@@ -216,20 +220,20 @@ const CreateQuiz = ({ initialData }: { initialData?: any }) => {
 
   return (
     <form className="mt-5" onSubmit={handleSubmit}>
-      <div className="">
+      <div className="max-h-[70vh] overflow-y-auto">
         <div className="mb-3">
           <Label>Quiz Title</Label>
           <Input
             value={quizTitle}
             placeholder="Enter Quiz Title"
             onChange={(e) => setQuizTitle(e.target.value)}
-            className="bg-themeBlack border-themeGray text-themeTextGray"
+            className="dark:bg-themeBlack dark:border-themeGray dark:text-themeTextGray bg-white border-zinc-100 text-black"
           />
         </div>
         <div className="mb-3">
           <Label>Module</Label>
           <Select value={module} onValueChange={(value) => setModule(value)}>
-            <SelectTrigger className="bg-themeBlack border-themeGray text-themeTextGray">
+            <SelectTrigger className="dark:bg-themeBlack dark:border-themeGray dark:text-themeTextGray bg-white border-zinc-100 text-black">
               <SelectValue placeholder="Select Module" />
             </SelectTrigger>
             <SelectContent>
@@ -239,12 +243,21 @@ const CreateQuiz = ({ initialData }: { initialData?: any }) => {
             </SelectContent>
           </Select>
         </div>
+        <div className="mb-3">
+          <Label>Quiz Instruction</Label>
+          <Textarea
+            value={instruction}
+            placeholder="Enter Quiz Instruction"
+            onChange={(e) => setInstruction(e.target.value)}
+            className="dark:bg-themeBlack dark:border-themeGray dark:text-themeTextGray bg-white border-zinc-100 text-black"
+          />
+        </div>
         <div>
           <Label>How Many Questions?</Label>
           <Input
             value={howManyQuiz}
             onChange={(e) => setHowManyQuiz(e.target.value)}
-            className="bg-themeBlack border-themeGray text-themeTextGray"
+            className="dark:bg-themeBlack dark:border-themeGray dark:text-themeTextGray bg-white border-zinc-100 text-black"
           />
         </div>
         <div className="mb-3 mt-3">
@@ -289,11 +302,11 @@ const CreateQuiz = ({ initialData }: { initialData?: any }) => {
           <Table className="mt-3">
             <TableHeader>
               <TableRow className="hover:bg-transparent">
-                <TableHead className="text-white">Questions</TableHead>
+                <TableHead className="dark:text-white text-black">Questions</TableHead>
                 {type === "multipleChoice" && (
-                  <TableHead className="text-white">Answers</TableHead>
+                  <TableHead className="dark:text-white text-black">Answers</TableHead>
                 )}
-                <TableHead className="text-white">Correct Answer</TableHead>
+                <TableHead className="dark:text-white text-black">Correct Answer</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>{renderTableRows()}</TableBody>
@@ -311,7 +324,7 @@ const CreateQuiz = ({ initialData }: { initialData?: any }) => {
         <Button
           variant="outline"
           type="submit"
-          className="bg-themeBlack mt-2 w-full border-themeGray rounded-xl"
+          className="dark:bg-themeBlack bg-white mt-2 w-full border-themeGray rounded-xl"
         >
           <Loader loading={isPending}>
             {initialData ? "Save Changes" : "Submit Quiz"}

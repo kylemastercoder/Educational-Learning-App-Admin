@@ -9,6 +9,7 @@ import {
   EllipsisVertical,
   Trash,
   ArchiveRestore,
+  Play,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -26,6 +27,7 @@ import CreateVideo from "@/components/forms/add-video";
 import AlertModal from "@/components/ui/alert-modal";
 import Image from "next/image";
 import ArchiveModal from "@/components/ui/archive-modal";
+import { Button } from "@/components/ui/button";
 
 const VideoList = ({ user }: { user: any }) => {
   const [videos, setVideos] = useState<any[]>([]);
@@ -34,6 +36,7 @@ const VideoList = ({ user }: { user: any }) => {
   const [deleteModal, setDeleteModal] = useState(false);
   const [archiveModal, setArchiveModal] = useState(false);
   const [selectedVideo, setSelectedVideo] = useState<any>(null);
+  const [videoModal, setVideoModal] = useState(false);
   useEffect(() => {
     const fetchVideos = async () => {
       setLoading(true);
@@ -67,6 +70,31 @@ const VideoList = ({ user }: { user: any }) => {
         description="Update your course for your community"
       >
         <CreateVideo initialData={selectedVideo} />
+      </Modal>
+    );
+  }
+
+  const generateEmbedUrl = (url: string): string => {
+    const videoId = url.split("v=")[1]?.split("&")[0];
+    return `https://www.youtube.com/embed/${videoId}`;
+  };
+
+  if (videoModal) {
+    return (
+      <Modal
+        isOpen={videoModal}
+        onClose={() => setVideoModal(false)}
+        title="Watch Video Lectures"
+        description={selectedVideo.name}
+      >
+        <iframe
+          className="w-full h-96"
+          src={generateEmbedUrl(selectedVideo.videoUrl)}
+          title={selectedVideo.name}
+          frameBorder="0"
+          allow="autoplay; fullscreen; picture-in-picture"
+          allowFullScreen
+        />
       </Modal>
     );
   }
@@ -124,7 +152,7 @@ const VideoList = ({ user }: { user: any }) => {
         onConfirm={onArchive}
       />
       <div key={video.id}>
-        <Card className="bg-transparent border-themeGray h-[430px] rounded-xl">
+        <Card className="bg-transparent dark:border-themeGray border-zinc-300 h-full rounded-xl overflow-hidden">
           {/* Video Player */}
           <div className="h-4/6 relative w-full">
             <Image
@@ -133,10 +161,22 @@ const VideoList = ({ user }: { user: any }) => {
               fill
               className="w-full h-full object-cover"
             />
+            <Button
+              onClick={() => {
+                setSelectedVideo(video);
+                setVideoModal(true);
+              }}
+              size="icon"
+              className="absolute top-3 right-3"
+            >
+              <Play className="w-5 h-5" />
+            </Button>
           </div>
           <div className="h-2/6 flex flex-col justify-center px-5">
             <div className="flex items-center justify-between">
-              <h2 className="text-lg text-white font-semibold">{video.name}</h2>
+              <h2 className="text-lg dark:text-white text-black font-semibold">
+                {video.name}
+              </h2>
               {user.isAdmin && (
                 <DropdownMenu>
                   <DropdownMenuTrigger>
@@ -176,7 +216,7 @@ const VideoList = ({ user }: { user: any }) => {
                 </DropdownMenu>
               )}
             </div>
-            <p className="text-sm text-themeTextGray">
+            <p className="text-sm dark:text-themeTextGray text-zinc-700">
               {parse(truncateString(video.description))}
             </p>
           </div>

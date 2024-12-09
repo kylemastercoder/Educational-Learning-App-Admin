@@ -13,10 +13,10 @@ const CourseLayout = async ({ params, children }: CourseLayoutProps) => {
   return (
     <>
       <div className="grid grid-cols-1 h-full lg:grid-cols-4 overflow-hidden">
-        <div className="bg-themeBlack p-5 overflow-y-auto">
+        <div className="dark:bg-themeBlack bg-zinc-200 p-5 overflow-y-auto">
           <CreateCourseModule user={user} courseId={params.courseId} />
         </div>
-        <div className="lg:col-span-3 max-h-full h-full pb-10 overflow-y-auto bg-[#101011]/90">
+        <div className="lg:col-span-3 max-h-full h-full pb-10 overflow-y-auto dark:bg-[#101011]/90 bg-white/90">
           {children}
         </div>
       </div>

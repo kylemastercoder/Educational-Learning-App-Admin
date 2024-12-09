@@ -203,7 +203,7 @@ const Overview = () => {
         description=""
       />
       <div className="container grid md:grid-cols-2 grid-cols-1 lg:grid-cols-3 2xl:grid-cols-5 py-10 gap-5">
-        <Card className="bg-emerald-950">
+        <Card className="bg-emerald-950 text-white">
           <CardHeader>
             <CardTitle>Total Modules</CardTitle>
           </CardHeader>
@@ -211,7 +211,7 @@ const Overview = () => {
             <p className="text-2xl font-bold">{courses.length}</p>
           </CardContent>
         </Card>
-        <Card className="bg-amber-950">
+        <Card className="bg-amber-950 text-white">
           <CardHeader>
             <CardTitle>Total Video Lectures</CardTitle>
           </CardHeader>
@@ -219,7 +219,7 @@ const Overview = () => {
             <p className="text-2xl font-bold">{videoLectures.length}</p>
           </CardContent>
         </Card>
-        <Card onClick={() => setOpen(true)} className="bg-red-950 cursor-pointer">
+        <Card onClick={() => setOpen(true)} className="bg-red-950 text-white cursor-pointer">
           <CardHeader>
             <CardTitle>Total Quizzes</CardTitle>
           </CardHeader>
@@ -227,7 +227,7 @@ const Overview = () => {
             <p className="text-2xl font-bold">{quizzes.length}</p>
           </CardContent>
         </Card>
-        <Card className="bg-blue-950">
+        <Card className="bg-blue-950 text-white">
           <CardHeader>
             <CardTitle>Total Code Challenges</CardTitle>
           </CardHeader>
@@ -235,7 +235,7 @@ const Overview = () => {
             <p className="text-2xl font-bold">{codes.length}</p>
           </CardContent>
         </Card>
-        <Card className="bg-pink-950">
+        <Card className="bg-pink-950 text-white">
           <CardHeader>
             <CardTitle>Total Students</CardTitle>
           </CardHeader>

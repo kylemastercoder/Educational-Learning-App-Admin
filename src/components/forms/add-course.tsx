@@ -92,7 +92,7 @@ const CreateCourse = ({ initialData }: { initialData?: any }) => {
                 </FormLabel>
                 <FormControl>
                   <Input
-                    className="bg-themeBlack border-themeGray text-themeTextGray"
+                    className="dark:bg-themeBlack dark:border-themeGray dark:text-themeTextGray bg-white border-zinc-100 text-black"
                     placeholder="Fundamentals of C Language"
                     {...field}
                   />
@@ -112,7 +112,7 @@ const CreateCourse = ({ initialData }: { initialData?: any }) => {
                 </FormLabel>
                 <FormControl>
                   <Textarea
-                    className="bg-themeBlack border-themeGray text-themeTextGray"
+                    className="dark:bg-themeBlack dark:border-themeGray dark:text-themeTextGray bg-white border-zinc-100 text-black"
                     placeholder="Enter Module Description"
                     {...field}
                   />
@@ -142,7 +142,7 @@ const CreateCourse = ({ initialData }: { initialData?: any }) => {
           />
           {!initialData && (
             <Link
-              className="text-sm text-themeTextGray hover:underline"
+              className="text-sm hover:underline"
               href={"/pages/courses"}
             >
               Skip for now
@@ -151,7 +151,7 @@ const CreateCourse = ({ initialData }: { initialData?: any }) => {
           <Button
             variant="outline"
             type="submit"
-            className="bg-themeBlack mt-2 w-full border-themeGray rounded-xl"
+            className="dark:bg-themeBlack bg-white mt-2 w-full border-themeGray rounded-xl"
           >
             <Loader loading={isPending}>
               {initialData ? "Save Changes" : "Get Started"}

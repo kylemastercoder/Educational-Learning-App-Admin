@@ -115,7 +115,7 @@ export const CreateCourseModule = ({
             <div className="flex flex-col gap-y-2">
               <Button
                 variant="outline"
-                className="flex items-center bg-themeBlack hover:bg-themeDarkGray"
+                className="flex items-center dark:bg-themeBlack dark:hover:bg-themeDarkGray bg-white hover:bg-zinc-100"
               >
                 <PlusCircle className="w-4 h-4 mr-2" />
                 Create Topic
@@ -178,8 +178,8 @@ const SortableModule = ({ module, href, isActive }: SortableModuleProps) => {
       ref={setNodeRef}
       style={style}
       className={cn(
-        "flex items-center mt-3 bg-themeBlack hover:bg-themeDarkGray justify-center py-2 rounded-md",
-        isActive ? "bg-themeDarkGray" : ""
+        "flex items-center mt-3 dark:bg-themeBlack dark:hover:bg-themeDarkGray bg-zinc-200 hover:bg-zinc-100 justify-center py-2 rounded-md",
+        isActive ? "dark:bg-themeDarkGray bg-zinc-300" : ""
       )}
       {...attributes}
       {...listeners}

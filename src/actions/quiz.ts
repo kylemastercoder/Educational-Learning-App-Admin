@@ -22,6 +22,7 @@ interface Question {
 interface QuizValues {
   quizTitle: string;
   module: string;
+  instruction: string;
   howManyQuiz: string;
   type: string;
   difficulties: string;
@@ -39,6 +40,7 @@ export const createQuiz = async (values: QuizValues) => {
     await setDoc(quizRef, {
       userId: clerkId,
       quizTitle: values.quizTitle,
+      instruction: values.instruction,
       courseId: values.module,
       howManyQuiz: values.howManyQuiz,
       difficulties: values.difficulties,
@@ -173,6 +175,7 @@ export const updateQuiz = async (values: QuizValues, quizId: string) => {
     await setDoc(quizRef, {
       userId: clerkId,
       quizTitle: values.quizTitle,
+      instruction: values.instruction,
       courseId: values.module,
       howManyQuiz: values.howManyQuiz,
       difficulties: values.difficulties,

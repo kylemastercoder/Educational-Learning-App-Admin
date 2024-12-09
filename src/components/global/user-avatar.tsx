@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Logout } from "@/icons"
 import { useClerk } from "@clerk/nextjs"
 import { DropDown } from "./drop-down"
+import { useTheme } from "next-themes"
 
 type UserWidgetProps = {
   image: string
@@ -13,6 +14,7 @@ type UserWidgetProps = {
 
 export const UserAvatar = ({ image, username }: UserWidgetProps) => {
   const { signOut } = useClerk()
+  const {theme} = useTheme();
 
   const onLogout = async () => {
     signOut({ redirectUrl: "/" })
@@ -33,7 +35,7 @@ export const UserAvatar = ({ image, username }: UserWidgetProps) => {
         variant="ghost"
         className="flex gap-x-3 px-2 justify-start w-full"
       >
-        <Logout />
+        <Logout color={theme === "dark" ? "#F7ECE9" : "#111"} />
         Logout
       </Button>
     </DropDown>

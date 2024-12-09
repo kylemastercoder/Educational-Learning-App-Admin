@@ -22,11 +22,10 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en" suppressHydrationWarning>
-        <body className={`${jakarta.className} bg-black h-screen`}>
+        <body className={`${jakarta.className} dark:bg-black bg-white h-screen`}>
           <ThemeProvider
             attribute="class"
-            defaultTheme="dark"
-            forcedTheme="dark"
+            defaultTheme="system"
             disableTransitionOnChange
           >
             <ReduxProvider>

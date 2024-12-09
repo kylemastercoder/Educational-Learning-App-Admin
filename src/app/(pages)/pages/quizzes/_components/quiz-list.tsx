@@ -60,6 +60,7 @@ const QuizList = ({ user }: { user: any }) => {
   if (editModal) {
     return (
       <Modal
+        className="max-w-4xl"
         isOpen={editModal}
         onClose={() => setEditModal(false)}
         title="Update Quizzes"
@@ -135,12 +136,12 @@ const QuizList = ({ user }: { user: any }) => {
         onConfirm={onArchive}
       />
       <div key={quiz.id}>
-        <Card className="bg-transparent border-themeGray h-full rounded-xl overflow-hidden">
+        <Card className="bg-transparent dark:border-themeGray border-zinc-300 h-full rounded-xl overflow-hidden">
           {/* Video Player */}
           <div className={`h-[300px] w-[600px] ${generateRandomColor()}`}></div>
           <div className="flex flex-col justify-center px-5 mt-3">
             <div className="flex justify-between items-center">
-              <h2 className="text-lg text-white font-semibold">
+              <h2 className="text-lg line-clamp-1 dark:text-white text-black font-semibold">
                 {quiz.quizTitle}
               </h2>
               {user.isAdmin && (

@@ -9,7 +9,7 @@ import {
 import { cn } from "@/lib/utils";
 
 type GlassModalProps = {
-  trigger: JSX.Element;
+  trigger?: JSX.Element;
   children: React.ReactNode;
   title: string;
   description: string;
@@ -26,10 +26,10 @@ export const GlassModal = ({
   return (
     <Dialog>
       <DialogTrigger asChild>{trigger}</DialogTrigger>
-      <DialogContent className={cn("bg-clip-padding backdrop-filter backdrop--blur__safari backdrop-blur-3xl bg-opacity-20 bg-themeGray border-themeGray", className)}>
+      <DialogContent className={cn("dark:bg-clip-padding dark:backdrop-filter dark:backdrop--blur__safari dark:backdrop-blur-3xl dark:bg-opacity-20 dark:bg-themeGray dark:border-themeGray bg-zinc-200 border-zinc-300", className)}>
         <DialogHeader>
-          <DialogTitle>{title}</DialogTitle>
-          <DialogDescription>{description}</DialogDescription>
+          <DialogTitle className="text-black dark:text-white">{title}</DialogTitle>
+          <DialogDescription className="text-black dark:text-white">{description}</DialogDescription>
         </DialogHeader>
         {children}
       </DialogContent>

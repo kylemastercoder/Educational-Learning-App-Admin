@@ -135,7 +135,7 @@ const ArchivedVideoList = () => {
         onConfirm={onArchive}
       />
       <div key={video.id}>
-        <Card className="bg-transparent border-themeGray h-[430px] rounded-xl">
+        <Card className="bg-transparent dark:border-themeGray border-zinc-300 h-full rounded-xl overflow-hidden">
           {/* Video Player */}
           <div className="h-4/6 relative w-full">
             <Image
@@ -147,7 +147,7 @@ const ArchivedVideoList = () => {
           </div>
           <div className="h-2/6 flex flex-col justify-center px-5">
             <div className="flex items-center justify-between">
-              <h2 className="text-lg text-white font-semibold">{video.name}</h2>
+              <h2 className="text-lg dark:text-white text-black font-semibold">{video.name}</h2>
               <DropdownMenu>
                 <DropdownMenuTrigger>
                   <EllipsisVertical className="w-4 h-4" />
@@ -185,7 +185,7 @@ const ArchivedVideoList = () => {
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
-            <p className="text-sm text-themeTextGray">
+            <p className="text-sm dark:text-themeTextGray text-zinc-700">
               {parse(truncateString(video.description))}
             </p>
           </div>

@@ -24,7 +24,6 @@ import ArchiveModal from "@/components/ui/archive-modal";
 import parse from "html-react-parser";
 import { truncateString } from "@/lib/utils";
 import { deleteCode, getArchivedCode, retrieveCode } from "@/actions/code";
-import Image from "next/image";
 import CreateCode from "@/components/forms/add-code";
 
 const ArchivedCodeList = () => {
@@ -134,18 +133,17 @@ const ArchivedCodeList = () => {
         onConfirm={onArchive}
       />
       <div key={code.id}>
-        <Card className="bg-transparent border-themeGray h-full rounded-xl overflow-hidden">
-          <div className="">
-            <Image
-              src={code.thumbnail}
-              alt="Code Challenge Thumbnail"
-              width={700}
-              height={400}
-            />
-          </div>
+        <Card className="bg-transparent dark:border-themeGray border-zinc-300 h-full rounded-xl overflow-hidden">
+          <img
+            src={code.thumbnail}
+            alt="cover"
+            className="h-[300px] w-full object-contain opacity-60"
+          />
           <div className="flex flex-col justify-center px-5 py-2">
             <div className="flex justify-between items-center pb-3">
-              <h2 className="text-lg text-white font-semibold">{code.title}</h2>
+              <h2 className="text-lg dark:text-white text-black font-semibold">
+                {code.title}
+              </h2>
               <DropdownMenu>
                 <DropdownMenuTrigger>
                   <EllipsisVertical className="w-4 h-4" />
@@ -183,7 +181,7 @@ const ArchivedCodeList = () => {
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
-            <p className="text-sm text-themeTextGray">
+            <p className="text-sm dark:text-themeTextGray text-zinc-700">
               {parse(truncateString(code.description))}
             </p>
           </div>

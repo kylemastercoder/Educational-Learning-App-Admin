@@ -96,8 +96,8 @@ const ImageUpload = ({
     <div className="flex flex-col items-center justify-center">
       <div
         {...getRootProps()}
-        className={`px-5 w-full border border-dashed mt-0.5 rounded-xl cursor-pointer py-8 flex justify-center items-center flex-col ${
-          isDragActive ? "bg-zinc-900" : "border-themeGray"
+        className={`px-5 w-full border bg-white dark:bg-transparent border-dashed mt-0.5 rounded-xl cursor-pointer py-8 flex justify-center items-center flex-col ${
+          isDragActive ? "dark:bg-zinc-900 bg-zinc-100" : "dark:border-themeGray border-zinc-800"
         } text-center cursor-pointer`}
       >
         <input {...getInputProps()} />
@@ -117,14 +117,14 @@ const ImageUpload = ({
           <Button
             onClick={removeImage}
             variant="outline"
-            className="absolute bg-themeBlack border-themeGray text-themeTextGray hover:bg-themeGray top-2 right-2"
+            className="absolute dark:bg-themeBlack dark:border-themeGray dark:text-themeTextGray bg-white border-zinc-100 text-black top-2 right-2"
           >
             Remove
           </Button>
           {uploading && (
-            <div className="w-full bg-gray-200 rounded-full h-2.5 mt-4">
+            <div className="w-full dark:bg-gray-200 bg-gray-900 rounded-full h-2.5 mt-4">
               <div
-                className="bg-themeGray h-2.5 rounded-full"
+                className="dar:bg-themeGray bg-zinc-100 h-2.5 rounded-full"
                 style={{ width: `${progress}%` }}
               ></div>
               <p className="text-center text-sm mt-2">{progress}%</p>

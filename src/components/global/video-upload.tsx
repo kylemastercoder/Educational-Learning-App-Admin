@@ -86,8 +86,10 @@ const VideoUpload = ({
       {!selectedVideo && !existingVideoUrl ? (
         <div
           {...getRootProps()}
-          className={`px-5 w-full border border-dashed mt-0.5 rounded-xl cursor-pointer py-8 flex justify-center items-center flex-col ${
-            isDragActive ? "bg-zinc-900" : "border-themeGray"
+          className={`px-5 w-full border bg-white dark:bg-transparent border-dashed mt-0.5 rounded-xl cursor-pointer py-8 flex justify-center items-center flex-col ${
+            isDragActive
+              ? "dark:bg-zinc-900 bg-zinc-100"
+              : "dark:border-themeGray border-zinc-800"
           } text-center cursor-pointer`}
         >
           <input {...getInputProps()} />

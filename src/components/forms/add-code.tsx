@@ -91,7 +91,7 @@ const CreateCode = ({ initialData }: { initialData?: any }) => {
                 <FormLabel className="flex flex-col gap-2">Title</FormLabel>
                 <FormControl>
                   <Input
-                    className="bg-themeBlack border-themeGray text-themeTextGray"
+                    className="dark:bg-themeBlack dark:border-themeGray dark:text-themeTextGray bg-white border-zinc-100 text-black"
                     placeholder="Print Hello World"
                     {...field}
                   />
@@ -130,7 +130,7 @@ const CreateCode = ({ initialData }: { initialData?: any }) => {
                 </FormLabel>
                 <FormControl>
                   <Input
-                    className="bg-themeBlack border-themeGray text-themeTextGray"
+                    className="dark:bg-themeBlack dark:border-themeGray dark:text-themeTextGray bg-white border-zinc-100 text-black"
                     placeholder="Hello World"
                     {...field}
                   />
@@ -161,7 +161,7 @@ const CreateCode = ({ initialData }: { initialData?: any }) => {
           <Button
             variant="outline"
             type="submit"
-            className="bg-themeBlack mt-2 w-full border-themeGray rounded-xl"
+            className="dark:bg-themeBlack bg-white mt-2 w-full border-themeGray rounded-xl"
           >
             <Loader loading={isPending}>
               {initialData ? "Save Changes" : "Submit Code Challenge"}
