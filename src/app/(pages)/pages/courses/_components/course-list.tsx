@@ -125,7 +125,13 @@ const CourseList = ({ user }: { user: any }) => {
         onClose={() => setArchiveModal(false)}
         onConfirm={onArchive}
       />
-      <div key={course.id}>
+      <div
+        className={user.isAdmin ? "" : "cursor-pointer"}
+        onClick={() =>
+          user.isAdmin ? "" : router.push(`/pages/courses/${course.id}`)
+        }
+        key={course.id}
+      >
         <Card className="bg-transparent dark:border-themeGray border-zinc-300 h-full rounded-xl overflow-hidden">
           <img
             src={course.imageUrl}
@@ -137,61 +143,50 @@ const CourseList = ({ user }: { user: any }) => {
               <h2 className="text-lg dark:text-white text-black font-semibold">
                 {course.name}
               </h2>
-              <DropdownMenu>
-                <DropdownMenuTrigger>
-                  <EllipsisVertical className="w-4 h-4" />
-                </DropdownMenuTrigger>
-                <DropdownMenuContent>
-                  <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  {user.isAdmin ? (
-                    <>
-                      <DropdownMenuItem
-                        onClick={() =>
-                          router.push(`/pages/courses/${course.id}`)
-                        }
-                      >
-                        <Notebook className="w-4 h-4 mr-2" />
-                        Create Topic
-                      </DropdownMenuItem>
-                      <DropdownMenuItem
-                        onClick={() => {
-                          setSelectedCourse(course); // Set the selected course data
-                          setEditModal(true);
-                        }}
-                      >
-                        <Edit className="w-4 h-4 mr-2" />
-                        Edit
-                      </DropdownMenuItem>
-                      <DropdownMenuItem
-                        onClick={() => {
-                          setSelectedCourse(course); // Set the selected course data
-                          setDeleteModal(true);
-                        }}
-                      >
-                        <Trash className="w-4 h-4 mr-2" />
-                        Delete
-                      </DropdownMenuItem>
-                      <DropdownMenuItem
-                        onClick={() => {
-                          setSelectedCourse(course);
-                          setArchiveModal(true);
-                        }}
-                      >
-                        <ArchiveRestore className="w-4 h-4 mr-2" />
-                        Archive
-                      </DropdownMenuItem>
-                    </>
-                  ) : (
+              {user.isAdmin && (
+                <DropdownMenu>
+                  <DropdownMenuTrigger>
+                    <EllipsisVertical className="w-4 h-4" />
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent>
+                    <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
                     <DropdownMenuItem
                       onClick={() => router.push(`/pages/courses/${course.id}`)}
                     >
                       <Notebook className="w-4 h-4 mr-2" />
-                      View Topics
+                      Create Topic
                     </DropdownMenuItem>
-                  )}
-                </DropdownMenuContent>
-              </DropdownMenu>
+                    <DropdownMenuItem
+                      onClick={() => {
+                        setSelectedCourse(course); // Set the selected course data
+                        setEditModal(true);
+                      }}
+                    >
+                      <Edit className="w-4 h-4 mr-2" />
+                      Edit
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => {
+                        setSelectedCourse(course); // Set the selected course data
+                        setDeleteModal(true);
+                      }}
+                    >
+                      <Trash className="w-4 h-4 mr-2" />
+                      Delete
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => {
+                        setSelectedCourse(course);
+                        setArchiveModal(true);
+                      }}
+                    >
+                      <ArchiveRestore className="w-4 h-4 mr-2" />
+                      Archive
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              )}
             </div>
             <p className="text-sm dark:text-themeTextGray text-zinc-700">
               {truncateString(course.description)}

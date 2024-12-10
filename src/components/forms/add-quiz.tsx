@@ -32,7 +32,9 @@ const CreateQuiz = ({ initialData }: { initialData?: any }) => {
   const [quizTitle, setQuizTitle] = useState("");
   const [instruction, setInstruction] = useState("");
   const [module, setModule] = useState("");
-  const [moduleData, setModuleData] = useState<{ moduleCount: number; name: string; id: string; }[]>([]);
+  const [moduleData, setModuleData] = useState<
+    { moduleCount: number; name: string; id: string }[]
+  >([]);
   const [howManyQuiz, setHowManyQuiz] = useState("1");
   const [type, setType] = useState("multipleChoice");
   const [difficulties, setDifficulties] = useState("beginner");
@@ -203,15 +205,32 @@ const CreateQuiz = ({ initialData }: { initialData?: any }) => {
         )}
         <TableCell>
           <div className="space-y-2">
-            <Input
-              type="text"
-              value={questions[index].correctAnswer || ""}
-              onChange={(e) =>
-                handleChange(index, "correctAnswer", e.target.value)
-              }
-              placeholder={`Enter correct answer`}
-              className="dark:bg-themeBlack dark:border-themeGray dark:text-themeTextGray bg-white border-zinc-100 text-black"
-            />
+            {type === "trueFalse" ? (
+              <Select
+                defaultValue={questions[index].correctAnswer || ""}
+                onValueChange={(value) =>
+                  handleChange(index, "correctAnswer", value)
+                }
+              >
+                <SelectTrigger className="dark:bg-themeBlack dark:border-themeGray dark:text-themeTextGray bg-white border-zinc-100 text-black">
+                  <SelectValue placeholder="Select Answer" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="true">True</SelectItem>
+                  <SelectItem value="false">False</SelectItem>
+                </SelectContent>
+              </Select>
+            ) : (
+              <Input
+                type="text"
+                value={questions[index].correctAnswer || ""}
+                onChange={(e) =>
+                  handleChange(index, "correctAnswer", e.target.value)
+                }
+                placeholder={`Enter correct answer`}
+                className="dark:bg-themeBlack dark:border-themeGray dark:text-themeTextGray bg-white border-zinc-100 text-black"
+              />
+            )}
           </div>
         </TableCell>
       </TableRow>
@@ -238,7 +257,9 @@ const CreateQuiz = ({ initialData }: { initialData?: any }) => {
             </SelectTrigger>
             <SelectContent>
               {moduleData.map((item) => (
-                <SelectItem key={item.id} value={item.id}>{item.name}</SelectItem>
+                <SelectItem key={item.id} value={item.id}>
+                  {item.name}
+                </SelectItem>
               ))}
             </SelectContent>
           </Select>
@@ -302,11 +323,17 @@ const CreateQuiz = ({ initialData }: { initialData?: any }) => {
           <Table className="mt-3">
             <TableHeader>
               <TableRow className="hover:bg-transparent">
-                <TableHead className="dark:text-white text-black">Questions</TableHead>
+                <TableHead className="dark:text-white text-black">
+                  Questions
+                </TableHead>
                 {type === "multipleChoice" && (
-                  <TableHead className="dark:text-white text-black">Answers</TableHead>
+                  <TableHead className="dark:text-white text-black">
+                    Answers
+                  </TableHead>
                 )}
-                <TableHead className="dark:text-white text-black">Correct Answer</TableHead>
+                <TableHead className="dark:text-white text-black">
+                  Correct Answer
+                </TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>{renderTableRows()}</TableBody>

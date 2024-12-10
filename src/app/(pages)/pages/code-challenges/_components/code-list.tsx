@@ -26,7 +26,7 @@ import CreateCode from "@/components/forms/add-code";
 import AlertModal from "@/components/ui/alert-modal";
 import ArchiveModal from "@/components/ui/archive-modal";
 
-const CodeList = ({ user }: { user: any }) => {
+const CodeList = () => {
   const [codes, setCodes] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [editModal, setEditModal] = useState(false);
@@ -131,45 +131,45 @@ const CodeList = ({ user }: { user: any }) => {
           />
           <div className="h-2/6 flex flex-col justify-center px-5">
             <div className="flex justify-between items-center">
-              <h2 className="text-lg dark:text-white text-black font-semibold">{code.title}</h2>
-              {user.isAdmin && (
-                <DropdownMenu>
-                  <DropdownMenuTrigger>
-                    <EllipsisVertical className="w-4 h-4" />
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent>
-                    <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem
-                      onClick={() => {
-                        setSelectedCode(code); // Set the selected code data
-                        setEditModal(true);
-                      }}
-                    >
-                      <Edit className="w-4 h-4 mr-2" />
-                      Edit
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                      onClick={() => {
-                        setSelectedCode(code); // Set the selected code data
-                        setDeleteModal(true);
-                      }}
-                    >
-                      <Trash className="w-4 h-4 mr-2" />
-                      Delete
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                      onClick={() => {
-                        setSelectedCode(code);
-                        setArchiveModal(true);
-                      }}
-                    >
-                      <ArchiveRestore className="w-4 h-4 mr-2" />
-                      Archive
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              )}
+              <h2 className="text-lg dark:text-white text-black font-semibold">
+                {code.title}
+              </h2>
+              <DropdownMenu>
+                <DropdownMenuTrigger>
+                  <EllipsisVertical className="w-4 h-4" />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    onClick={() => {
+                      setSelectedCode(code); // Set the selected code data
+                      setEditModal(true);
+                    }}
+                  >
+                    <Edit className="w-4 h-4 mr-2" />
+                    Edit
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={() => {
+                      setSelectedCode(code); // Set the selected code data
+                      setDeleteModal(true);
+                    }}
+                  >
+                    <Trash className="w-4 h-4 mr-2" />
+                    Delete
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={() => {
+                      setSelectedCode(code);
+                      setArchiveModal(true);
+                    }}
+                  >
+                    <ArchiveRestore className="w-4 h-4 mr-2" />
+                    Archive
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
             <p className="text-sm dark:text-themeTextGray text-zinc-700">
               {parse(truncateString(code.description))}

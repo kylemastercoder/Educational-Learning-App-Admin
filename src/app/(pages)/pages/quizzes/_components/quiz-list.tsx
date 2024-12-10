@@ -25,7 +25,7 @@ import CreateQuiz from "@/components/forms/add-quiz";
 import AlertModal from "@/components/ui/alert-modal";
 import ArchiveModal from "@/components/ui/archive-modal";
 
-const QuizList = ({ user }: { user: any }) => {
+const QuizList = () => {
   const [quizzes, setQuizzes] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [editModal, setEditModal] = useState(false);
@@ -144,44 +144,42 @@ const QuizList = ({ user }: { user: any }) => {
               <h2 className="text-lg line-clamp-1 dark:text-white text-black font-semibold">
                 {quiz.quizTitle}
               </h2>
-              {user.isAdmin && (
-                <DropdownMenu>
-                  <DropdownMenuTrigger>
-                    <EllipsisVertical className="w-4 h-4" />
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent>
-                    <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem
-                      onClick={() => {
-                        setSelectedQuiz(quiz); // Set the selected quiz data
-                        setEditModal(true);
-                      }}
-                    >
-                      <Edit className="w-4 h-4 mr-2" />
-                      Edit
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                      onClick={() => {
-                        setSelectedQuiz(quiz); // Set the selected quiz data
-                        setDeleteModal(true);
-                      }}
-                    >
-                      <Trash className="w-4 h-4 mr-2" />
-                      Delete
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                      onClick={() => {
-                        setSelectedQuiz(quiz);
-                        setArchiveModal(true);
-                      }}
-                    >
-                      <ArchiveRestore className="w-4 h-4 mr-2" />
-                      Archive
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              )}
+              <DropdownMenu>
+                <DropdownMenuTrigger>
+                  <EllipsisVertical className="w-4 h-4" />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    onClick={() => {
+                      setSelectedQuiz(quiz); // Set the selected quiz data
+                      setEditModal(true);
+                    }}
+                  >
+                    <Edit className="w-4 h-4 mr-2" />
+                    Edit
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={() => {
+                      setSelectedQuiz(quiz); // Set the selected quiz data
+                      setDeleteModal(true);
+                    }}
+                  >
+                    <Trash className="w-4 h-4 mr-2" />
+                    Delete
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={() => {
+                      setSelectedQuiz(quiz);
+                      setArchiveModal(true);
+                    }}
+                  >
+                    <ArchiveRestore className="w-4 h-4 mr-2" />
+                    Archive
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
             <h2 className="text-sm text-muted-foreground">
               {quiz.howManyQuiz} Questions
