@@ -1,4 +1,4 @@
-export const Logout = ({color}: {color: string}) => {
+export const Logout = ({color}: {color?: string}) => {
   return (
     <svg
       width="16"
