@@ -25,7 +25,6 @@ import {
 import { Modal } from "@/components/ui/modal";
 import CreateVideo from "@/components/forms/add-video";
 import AlertModal from "@/components/ui/alert-modal";
-import Image from "next/image";
 import ArchiveModal from "@/components/ui/archive-modal";
 import { Button } from "@/components/ui/button";
 
@@ -152,26 +151,22 @@ const VideoList = ({ user }: { user: any }) => {
         onConfirm={onArchive}
       />
       <div key={video.id}>
-        <Card className="bg-transparent dark:border-themeGray border-zinc-300 h-full rounded-xl overflow-hidden">
-          {/* Video Player */}
-          <div className="h-4/6 relative w-full">
-            <Image
-              src={video.thumbnail}
-              alt="Quiz Thumbnail"
-              fill
-              className="w-full h-full object-cover"
-            />
-            <Button
-              onClick={() => {
-                setSelectedVideo(video);
-                setVideoModal(true);
-              }}
-              size="icon"
-              className="absolute top-3 right-3"
-            >
-              <Play className="w-5 h-5" />
-            </Button>
-          </div>
+        <Card className="bg-transparent relative dark:border-themeGray border-zinc-300 h-full rounded-xl overflow-hidden">
+          <img
+            src={video.thumbnail}
+            alt="cover"
+            className="h-4/6 w-full opacity-60"
+          />
+          <Button
+            onClick={() => {
+              setSelectedVideo(video);
+              setVideoModal(true);
+            }}
+            size="icon"
+            className="absolute top-3 right-3"
+          >
+            <Play className="w-5 h-5" />
+          </Button>
           <div className="h-2/6 flex flex-col justify-center px-5">
             <div className="flex items-center justify-between">
               <h2 className="text-lg dark:text-white text-black font-semibold">

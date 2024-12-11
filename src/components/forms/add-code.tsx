@@ -22,6 +22,7 @@ import { toast } from "sonner";
 import RichTextEditor from "../global/rich-text-editor";
 import { createCode, updateCode } from "@/actions/code";
 import ImageUpload from "../global/image-upload";
+import { Textarea } from "../ui/textarea";
 
 const CreateCode = ({ initialData }: { initialData?: any }) => {
   const [isPending, setIsPending] = useState(false);
@@ -129,8 +130,8 @@ const CreateCode = ({ initialData }: { initialData?: any }) => {
                   Correct Output
                 </FormLabel>
                 <FormControl>
-                  <Input
-                    className="dark:bg-themeBlack dark:border-themeGray dark:text-themeTextGray bg-white border-zinc-100 text-black"
+                  <Textarea
+                    className="dark:bg-themeBlack dark:border-themeGray dark:text-themeTextGray bg-white border-zinc-100 text-black min-h-32"
                     placeholder="Hello World"
                     {...field}
                   />
@@ -145,9 +146,7 @@ const CreateCode = ({ initialData }: { initialData?: any }) => {
             name="imageUrl"
             render={({ field }) => (
               <FormItem className="mb-3">
-                <FormLabel className="flex flex-col gap-2">
-                  Thumbnail
-                </FormLabel>
+                <FormLabel className="flex flex-col gap-2">Thumbnail</FormLabel>
                 <FormControl>
                   <ImageUpload
                     onImageUpload={(data) => field.onChange(data)}

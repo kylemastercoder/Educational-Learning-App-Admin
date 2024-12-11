@@ -123,11 +123,11 @@ const CodeList = () => {
         onConfirm={onArchive}
       />
       <div key={code.id}>
-        <Card className="bg-transparent dark:border-themeGray border-zinc-300 h-full rounded-xl overflow-hidden">
+        <Card className="bg-transparent relative dark:border-themeGray border-zinc-300 h-full rounded-xl overflow-hidden">
           <img
             src={code.thumbnail}
             alt="cover"
-            className="h-4/6 w-full opacity-60"
+            className="h-4/6 w-full opacity-60 object-cover"
           />
           <div className="h-2/6 flex flex-col justify-center px-5">
             <div className="flex justify-between items-center">
