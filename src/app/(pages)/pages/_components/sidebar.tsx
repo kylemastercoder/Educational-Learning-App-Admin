@@ -44,7 +44,7 @@ const Sidebar = ({ mobile }: Props) => {
           : "w-full flex"
       )}
     >
-      <p className="font-bold text-2xl">C-Challenge</p>
+      <p className="font-bold text-2xl">C Challenge</p>
       <div className="flex flex-col gap-y-3">
         <p className="text-[10px] dark:text-[#F7ECE9] text-black">MAIN MENU</p>
         <Link
