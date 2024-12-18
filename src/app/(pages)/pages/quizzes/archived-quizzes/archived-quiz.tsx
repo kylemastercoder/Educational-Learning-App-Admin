@@ -22,7 +22,6 @@ import { Modal } from "@/components/ui/modal";
 import AlertModal from "@/components/ui/alert-modal";
 import ArchiveModal from "@/components/ui/archive-modal";
 import { deleteQuiz, getArchivedQuizzes, retrieveQuiz } from "@/actions/quiz";
-import { Badge } from "@/components/ui/badge";
 import CreateQuiz from "@/components/forms/add-quiz";
 
 const ArchivedQuizList = () => {
@@ -196,22 +195,6 @@ const ArchivedQuizList = () => {
                 : "True or False"}
             </p>
           </div>
-          <Badge
-            className="mt-2 ml-5"
-            variant={
-              quiz.difficulties === "beginner"
-                ? "default"
-                : quiz.difficulties === "intermediate"
-                ? "secondary"
-                : "destructive"
-            }
-          >
-            {quiz.difficulties === "beginner"
-              ? "Beginner"
-              : quiz.difficulties === "intermediate"
-              ? "Intermediate"
-              : "Advanced"}
-          </Badge>
         </Card>
       </div>
     </>

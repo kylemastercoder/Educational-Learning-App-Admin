@@ -7,6 +7,7 @@ import { BadgePlus } from "lucide-react";
 const CodeCreate = () => {
   return (
     <GlassModal
+    className="max-w-7xl max-h-[80vh] overflow-y-auto overflow-x-hidden"
       title="Create a new code challenge"
       description="Add a new form for your community"
       trigger={

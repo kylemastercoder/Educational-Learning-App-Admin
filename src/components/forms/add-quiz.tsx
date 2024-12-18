@@ -37,7 +37,6 @@ const CreateQuiz = ({ initialData }: { initialData?: any }) => {
   >([]);
   const [howManyQuiz, setHowManyQuiz] = useState("1");
   const [type, setType] = useState("multipleChoice");
-  const [difficulties, setDifficulties] = useState("beginner");
   const [questions, setQuestions] = useState([
     { question: "", correctAnswer: "", answers: "" },
   ]);
@@ -51,7 +50,6 @@ const CreateQuiz = ({ initialData }: { initialData?: any }) => {
       setModule(initialData.module);
       setHowManyQuiz(initialData.howManyQuiz.toString());
       setType(initialData.type);
-      setDifficulties(initialData.difficulties);
       setQuestions(initialData.questions || []);
     }
   }, [initialData]);
@@ -78,24 +76,20 @@ const CreateQuiz = ({ initialData }: { initialData?: any }) => {
     const numQuestions = parseInt(howManyQuiz, 10);
     if (!isNaN(numQuestions) && numQuestions > 0) {
       setQuestions((prevQuestions) => {
-        // Ensure the number of questions matches howManyQuiz
-        if (prevQuestions.length < numQuestions) {
-          // Add new questions if needed
-          return [
-            ...prevQuestions,
-            ...Array(numQuestions - prevQuestions.length).fill({
-              question: "",
-              correctAnswer: "",
-              answers: "",
-            }),
-          ];
-        } else {
-          // Remove excess questions if needed
-          return prevQuestions.slice(0, numQuestions);
+        const updatedQuestions = [...prevQuestions];
+
+        // Add empty question objects if necessary
+        while (updatedQuestions.length < numQuestions) {
+          updatedQuestions.push({
+            question: "",
+            correctAnswer: "",
+            answers: "",
+          });
         }
+
+        // Trim to the desired number of questions
+        return updatedQuestions.slice(0, numQuestions);
       });
-    } else {
-      setQuestions([{ question: "", correctAnswer: "", answers: "" }]); // Reset if invalid number
     }
   }, [howManyQuiz]);
 
@@ -145,7 +139,6 @@ const CreateQuiz = ({ initialData }: { initialData?: any }) => {
       howManyQuiz,
       type,
       instruction,
-      difficulties,
       questions,
     };
 
@@ -177,64 +170,143 @@ const CreateQuiz = ({ initialData }: { initialData?: any }) => {
   };
 
   const renderTableRows = () => {
-    return questions.map((_, index) => (
-      <TableRow key={index} className="hover:bg-transparent">
-        <TableCell>
-          <div className="space-y-2">
-            <Input
-              type="text"
-              value={questions[index].question || ""}
-              onChange={(e) => handleChange(index, "question", e.target.value)}
-              placeholder={`Enter question ${index + 1}`}
-              className="dark:bg-themeBlack dark:border-themeGray dark:text-themeTextGray bg-white border-zinc-100 text-black"
-            />
-          </div>
-        </TableCell>
-        {type === "multipleChoice" && (
+    if (initialData) {
+      return initialData.questions.map((question: any, index: number) => (
+        <TableRow key={index} className="hover:bg-transparent">
+          {/* Question Input */}
           <TableCell>
             <div className="space-y-2">
               <Input
                 type="text"
-                value={questions[index].answers || ""}
-                onChange={(e) => handleChange(index, "answers", e.target.value)}
-                placeholder={`Enter answers separated by comma`}
+                value={question.question || ""}
+                onChange={(e) =>
+                  handleChange(index, "question", e.target.value)
+                }
+                placeholder={`Enter question ${index + 1}`}
                 className="dark:bg-themeBlack dark:border-themeGray dark:text-themeTextGray bg-white border-zinc-100 text-black"
               />
             </div>
           </TableCell>
-        )}
-        <TableCell>
-          <div className="space-y-2">
-            {type === "trueFalse" ? (
-              <Select
-                defaultValue={questions[index].correctAnswer || ""}
-                onValueChange={(value) =>
-                  handleChange(index, "correctAnswer", value)
-                }
-              >
-                <SelectTrigger className="dark:bg-themeBlack dark:border-themeGray dark:text-themeTextGray bg-white border-zinc-100 text-black">
-                  <SelectValue placeholder="Select Answer" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="true">True</SelectItem>
-                  <SelectItem value="false">False</SelectItem>
-                </SelectContent>
-              </Select>
-            ) : (
+
+          {/* Multiple Choice Answers Input */}
+          {type === "multipleChoice" && (
+            <TableCell>
+              <div className="space-y-2">
+                <Input
+                  type="text"
+                  value={question.answers || ""}
+                  onChange={(e) =>
+                    handleChange(index, "answers", e.target.value)
+                  }
+                  placeholder="Enter answers separated by a comma"
+                  className="dark:bg-themeBlack dark:border-themeGray dark:text-themeTextGray bg-white border-zinc-100 text-black"
+                />
+              </div>
+            </TableCell>
+          )}
+
+          {/* Correct Answer Input */}
+          <TableCell>
+            <div className="space-y-2">
+              {type === "trueFalse" ? (
+                <Select
+                  defaultValue={question.correctAnswer || ""}
+                  onValueChange={(value) =>
+                    handleChange(index, "correctAnswer", value)
+                  }
+                >
+                  <SelectTrigger className="dark:bg-themeBlack dark:border-themeGray dark:text-themeTextGray bg-white border-zinc-100 text-black">
+                    <SelectValue placeholder="Select Answer" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="true">True</SelectItem>
+                    <SelectItem value="false">False</SelectItem>
+                  </SelectContent>
+                </Select>
+              ) : (
+                <Input
+                  type="text"
+                  value={question.correctAnswer || ""}
+                  onChange={(e) =>
+                    handleChange(index, "correctAnswer", e.target.value)
+                  }
+                  placeholder="Enter correct answer"
+                  className="dark:bg-themeBlack dark:border-themeGray dark:text-themeTextGray bg-white border-zinc-100 text-black"
+                />
+              )}
+            </div>
+          </TableCell>
+        </TableRow>
+      ));
+    } else {
+      return questions.map((question, index) => (
+        <TableRow key={index} className="hover:bg-transparent">
+          {/* Question Input */}
+          <TableCell>
+            <div className="space-y-2">
               <Input
                 type="text"
-                value={questions[index].correctAnswer || ""}
+                value={question.question || ""}
                 onChange={(e) =>
-                  handleChange(index, "correctAnswer", e.target.value)
+                  handleChange(index, "question", e.target.value)
                 }
-                placeholder={`Enter correct answer`}
+                placeholder={`Enter question ${index + 1}`}
                 className="dark:bg-themeBlack dark:border-themeGray dark:text-themeTextGray bg-white border-zinc-100 text-black"
               />
-            )}
-          </div>
-        </TableCell>
-      </TableRow>
-    ));
+            </div>
+          </TableCell>
+
+          {/* Multiple Choice Answers Input */}
+          {type === "multipleChoice" && (
+            <TableCell>
+              <div className="space-y-2">
+                <Input
+                  type="text"
+                  value={question.answers || ""}
+                  onChange={(e) =>
+                    handleChange(index, "answers", e.target.value)
+                  }
+                  placeholder="Enter answers separated by a comma"
+                  className="dark:bg-themeBlack dark:border-themeGray dark:text-themeTextGray bg-white border-zinc-100 text-black"
+                />
+              </div>
+            </TableCell>
+          )}
+
+          {/* Correct Answer Input */}
+          <TableCell>
+            <div className="space-y-2">
+              {type === "trueFalse" ? (
+                <Select
+                  defaultValue={question.correctAnswer || ""}
+                  onValueChange={(value) =>
+                    handleChange(index, "correctAnswer", value)
+                  }
+                >
+                  <SelectTrigger className="dark:bg-themeBlack dark:border-themeGray dark:text-themeTextGray bg-white border-zinc-100 text-black">
+                    <SelectValue placeholder="Select Answer" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="true">True</SelectItem>
+                    <SelectItem value="false">False</SelectItem>
+                  </SelectContent>
+                </Select>
+              ) : (
+                <Input
+                  type="text"
+                  value={question.correctAnswer || ""}
+                  onChange={(e) =>
+                    handleChange(index, "correctAnswer", e.target.value)
+                  }
+                  placeholder="Enter correct answer"
+                  className="dark:bg-themeBlack dark:border-themeGray dark:text-themeTextGray bg-white border-zinc-100 text-black"
+                />
+              )}
+            </div>
+          </TableCell>
+        </TableRow>
+      ));
+    }
   };
 
   return (
@@ -280,28 +352,6 @@ const CreateQuiz = ({ initialData }: { initialData?: any }) => {
             onChange={(e) => setHowManyQuiz(e.target.value)}
             className="dark:bg-themeBlack dark:border-themeGray dark:text-themeTextGray bg-white border-zinc-100 text-black"
           />
-        </div>
-        <div className="mb-3 mt-3">
-          <div className="space-y-3">
-            <Label>Quiz Difficulties</Label>
-            <RadioGroup
-              defaultValue={difficulties}
-              onValueChange={(value) => setDifficulties(value)}
-            >
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="beginner" id="beginner" />
-                <Label htmlFor="beginner">Beginner</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="intermediate" id="intermediate" />
-                <Label htmlFor="intermediate">Intermediate</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="advanced" id="advanced" />
-                <Label htmlFor="advanced">Advanced</Label>
-              </div>
-            </RadioGroup>
-          </div>
         </div>
         <div className="mb-3 mt-3">
           <div className="space-y-3">

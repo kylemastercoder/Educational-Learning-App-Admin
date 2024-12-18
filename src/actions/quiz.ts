@@ -25,7 +25,6 @@ interface QuizValues {
   instruction: string;
   howManyQuiz: string;
   type: string;
-  difficulties: string;
   questions: Question[];
 }
 
@@ -43,7 +42,6 @@ export const createQuiz = async (values: QuizValues) => {
       instruction: values.instruction,
       courseId: values.module,
       howManyQuiz: values.howManyQuiz,
-      difficulties: values.difficulties,
       type: values.type,
       questions: values.questions,
       isArchive: false,
@@ -178,7 +176,6 @@ export const updateQuiz = async (values: QuizValues, quizId: string) => {
       instruction: values.instruction,
       courseId: values.module,
       howManyQuiz: values.howManyQuiz,
-      difficulties: values.difficulties,
       type: values.type,
       questions: values.questions,
       isArchive: false,

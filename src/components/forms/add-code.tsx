@@ -108,7 +108,7 @@ const CreateCode = ({ initialData }: { initialData?: any }) => {
             render={({ field }) => (
               <FormItem className="mb-3">
                 <FormLabel className="flex flex-col gap-2">
-                  Description
+                  Instruction
                 </FormLabel>
                 <FormControl>
                   <RichTextEditor

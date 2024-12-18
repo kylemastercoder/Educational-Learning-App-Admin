@@ -11,7 +11,6 @@ import {
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { archiveQuiz, deleteQuiz, getQuizzes } from "@/actions/quiz";
-import { Badge } from "@/components/ui/badge";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -190,22 +189,6 @@ const QuizList = () => {
                 : "True or False"}
             </p>
           </div>
-          <Badge
-            className="mt-2 ml-5"
-            variant={
-              quiz.difficulties === "beginner"
-                ? "default"
-                : quiz.difficulties === "intermediate"
-                ? "secondary"
-                : "destructive"
-            }
-          >
-            {quiz.difficulties === "beginner"
-              ? "Beginner"
-              : quiz.difficulties === "intermediate"
-              ? "Intermediate"
-              : "Advanced"}
-          </Badge>
         </Card>
       </div>
     </>
