@@ -67,7 +67,7 @@ export const columns: ColumnDef<StudentColumn>[] = [
   },
   {
     accessorKey: "course",
-    header: "Course",
+    header: "Program",
   },
   {
     accessorKey: "status",

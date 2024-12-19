@@ -12,10 +12,6 @@ export type InstructorColumn = {
 
 export const columns: ColumnDef<InstructorColumn>[] = [
   {
-    accessorKey: "id",
-    header: "ID",
-  },
-  {
     accessorKey: "name",
     header: "Instructor",
     cell: ({ row }) => (
