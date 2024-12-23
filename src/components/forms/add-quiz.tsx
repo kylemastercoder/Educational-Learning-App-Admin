@@ -198,7 +198,7 @@ const CreateQuiz = ({ initialData }: { initialData?: any }) => {
                   onChange={(e) =>
                     handleChange(index, "answers", e.target.value)
                   }
-                  placeholder="Enter answers separated by a comma"
+                  placeholder="Enter answers separated by a '|'"
                   className="dark:bg-themeBlack dark:border-themeGray dark:text-themeTextGray bg-white border-zinc-100 text-black"
                 />
               </div>
@@ -266,7 +266,7 @@ const CreateQuiz = ({ initialData }: { initialData?: any }) => {
                   onChange={(e) =>
                     handleChange(index, "answers", e.target.value)
                   }
-                  placeholder="Enter answers separated by a comma"
+                  placeholder="Enter answers separated by a '|'"
                   className="dark:bg-themeBlack dark:border-themeGray dark:text-themeTextGray bg-white border-zinc-100 text-black"
                 />
               </div>

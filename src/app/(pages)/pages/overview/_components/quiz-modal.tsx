@@ -85,7 +85,7 @@ export const QuizModal = ({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent
         className={cn(
-          "bg-clip-padding backdrop-filter backdrop--blur__safari backdrop-blur-3xl max-w-7xl mx-auto bg-opacity-20 bg-themeGray border-themeGray",
+          "bg-clip-padding backdrop-filter backdrop--blur__safari backdrop-blur-3xl max-w-7xl mx-auto bg-opacity-20 bg-themeGray max-h-[80vh] overflow-y-auto border-themeGray",
           className
         )}
       >

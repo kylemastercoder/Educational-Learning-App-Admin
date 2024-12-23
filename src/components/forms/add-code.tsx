@@ -23,6 +23,13 @@ import RichTextEditor from "../global/rich-text-editor";
 import { createCode, updateCode } from "@/actions/code";
 import ImageUpload from "../global/image-upload";
 import { Textarea } from "../ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
 
 const CreateCode = ({ initialData }: { initialData?: any }) => {
   const [isPending, setIsPending] = useState(false);
@@ -42,6 +49,7 @@ const CreateCode = ({ initialData }: { initialData?: any }) => {
           description: "",
           correctOutput: "",
           imageUrl: "",
+          programmingLanguage: "",
         },
   });
 
@@ -96,6 +104,34 @@ const CreateCode = ({ initialData }: { initialData?: any }) => {
                     placeholder="Print Hello World"
                     {...field}
                   />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="programmingLanguage"
+            disabled={isPending}
+            render={({ field }) => (
+              <FormItem className="mb-3">
+                <FormLabel className="flex flex-col gap-2">
+                  Programming Language
+                </FormLabel>
+                <FormControl>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <SelectTrigger className="dark:bg-themeBlack dark:border-themeGray dark:text-themeTextGray bg-white border-zinc-100 text-black">
+                      <SelectValue placeholder="Select a programming language" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="C Language">C Language</SelectItem>
+                      <SelectItem value="C++ Language">C++ Language</SelectItem>
+                      <SelectItem value="C# Language">C# Language</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </FormControl>
                 <FormMessage />
               </FormItem>
