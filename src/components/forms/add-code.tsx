@@ -127,9 +127,9 @@ const CreateCode = ({ initialData }: { initialData?: any }) => {
                       <SelectValue placeholder="Select a programming language" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="C Language">C Language</SelectItem>
-                      <SelectItem value="C++ Language">C++ Language</SelectItem>
-                      <SelectItem value="C# Language">C# Language</SelectItem>
+                      <SelectItem value="c">C Language</SelectItem>
+                      <SelectItem value="c++">C++ Language</SelectItem>
+                      <SelectItem value="c#">C# Language</SelectItem>
                     </SelectContent>
                   </Select>
                 </FormControl>
