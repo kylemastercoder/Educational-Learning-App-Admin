@@ -66,6 +66,7 @@ const VideoList = ({ user }: { user: any }) => {
         isOpen={editModal}
         onClose={() => setEditModal(false)}
         title="Update Video Lectures"
+        className='max-h-[600px] overflow-y-auto'
         description="Update your course for your community"
       >
         <CreateVideo initialData={selectedVideo} />

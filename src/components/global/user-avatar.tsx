@@ -2,7 +2,7 @@
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Logout } from "@/icons";
+import { Logout, Settings } from "@/icons";
 import { useClerk } from "@clerk/nextjs";
 import { DropDown } from "./drop-down";
 import { useTheme } from "next-themes";
@@ -25,7 +25,12 @@ export const UserAvatar = ({ image, username }: UserWidgetProps) => {
 
   return (
     <>
-    <AlertModal title="Are you sure you want to logout?" onConfirm={onLogout} isOpen={isOpen} onClose={() => setIsOpen(false)} />
+      <AlertModal
+        title="Are you sure you want to logout?"
+        onConfirm={onLogout}
+        isOpen={isOpen}
+        onClose={() => setIsOpen(false)}
+      />
       <DropDown
         title="Account"
         trigger={
@@ -35,6 +40,14 @@ export const UserAvatar = ({ image, username }: UserWidgetProps) => {
           </Avatar>
         }
       >
+        <Button
+          onClick={() => window.location.assign("/pages/access-settings")}
+          variant="ghost"
+          className="flex gap-x-3 px-2 justify-start w-full"
+        >
+          <Settings color={theme === "dark" ? "#F7ECE9" : "#111"} />
+          Access Settings
+        </Button>
         <Button
           onClick={() => setIsOpen(true)}
           variant="ghost"
